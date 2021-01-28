@@ -211,7 +211,7 @@ module OTTER_MCU #(
         .MEM_DOUT1 (ir),
         .MEM_DOUT2 (mem_dout) 
     );
-    MemoryDelay #(.LATENCY(3)) mem_delay(.clk(clk), .access(fsm.memAccess), .ready(fsm.mem_ready));
+    MemoryDelay #(.LATENCY(10)) mem_delay(.clk(clk), .access(fsm.memAccess), .ready(fsm.mem_ready));
     
     RegFile regfile(
         .clk(clk),

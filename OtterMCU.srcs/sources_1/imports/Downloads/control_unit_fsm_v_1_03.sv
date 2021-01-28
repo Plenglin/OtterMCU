@@ -83,6 +83,7 @@ module CU_FSM(
 	
 	state_type cmd_finish;
 	assign cmd_finish = intr ? st_INTR : st_FET;
+	assign memAccess = (NS == st_WB | NS == st_EX) & (PS != NS);
 
 	//- state registers (PS)
 	always @(posedge clk) begin
@@ -101,7 +102,6 @@ module CU_FSM(
         memRDEN1 = 1'b0;    
         memRDEN2 = 1'b0;
         int_taken = 0;
-        memAccess = 0;
 
         case (PS)
             st_INIT: begin
@@ -111,7 +111,6 @@ module CU_FSM(
 
             st_FET: begin
                 memRDEN1 = 1'b1;
-                memAccess = 1;
                 NS = mem_ready ? st_EX : st_FET; 
             end
               
@@ -186,7 +185,6 @@ module CU_FSM(
                 pcWrite = 0;
                 regWrite = 1; 
                 memRDEN2 = 1;
-                memAccess = 1;
                 NS = mem_ready ? cmd_finish : st_WB;
             end
             
