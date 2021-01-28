@@ -37,7 +37,7 @@ module Benchmark();
         RST = 0;
         start = $time;
         $display("Started", start);
-        forever #1 if (my_otter.prog_counter.addr === 32'h1e8) begin
+        forever #1 if (my_otter.prog_counter.addr === 32'h1d4) begin
              $display("Reached %d in %l", my_otter.prog_counter.addr, $time - start); 
              $stop;
         end
