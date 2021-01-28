@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="270400001fs"></ZoomEndTime>
-      <Cursor1Time time="106510000fs"></Cursor1Time>
+      <ZoomEndTime time="680501fs"></ZoomEndTime>
+      <Cursor1Time time="490000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="172"></NameColumnWidth>
-      <ValueColumnWidth column_width="78"></ValueColumnWidth>
+      <ValueColumnWidth column_width="74"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="12" />
    <wvobject type="logic" fp_name="/Benchmark/RST">
       <obj_property name="ElementShortName">RST</obj_property>
       <obj_property name="ObjectShortName">RST</obj_property>
@@ -61,5 +61,21 @@
       <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/Benchmark/my_otter/fsm/PS">
+      <obj_property name="ElementShortName">PS[2:0]</obj_property>
+      <obj_property name="ObjectShortName">PS[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/Benchmark/my_otter/mem_delay/access">
+      <obj_property name="ElementShortName">access</obj_property>
+      <obj_property name="ObjectShortName">access</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/Benchmark/my_otter/mem_delay/counter">
+      <obj_property name="ElementShortName">counter[7:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/Benchmark/my_otter/mem_delay/ready">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
    </wvobject>
 </wave_config>

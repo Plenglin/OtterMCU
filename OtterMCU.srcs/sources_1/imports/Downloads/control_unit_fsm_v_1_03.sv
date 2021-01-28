@@ -43,11 +43,13 @@ module CU_FSM(
     input RST,
     input [2:0] func3,
     input [6:0] opcode,     // ir[6:0]
+    input mem_ready,
     output logic pcWrite,
     output logic regWrite,
     output logic memWE2,
     output logic memRDEN1,
     output logic memRDEN2,
+    output logic memAccess,
     output logic reset,
     output logic csr_we,
     output logic int_taken
@@ -99,16 +101,18 @@ module CU_FSM(
         memRDEN1 = 1'b0;    
         memRDEN2 = 1'b0;
         int_taken = 0;
-                       
+        memAccess = 0;
+
         case (PS)
             st_INIT: begin
-                reset = 1'b1;                    
+                reset = 1'b1;
                 NS = st_FET; 
             end
 
             st_FET: begin
-                memRDEN1 = 1'b1;                    
-                NS = st_EX; 
+                memRDEN1 = 1'b1;
+                memAccess = 1;
+                NS = mem_ready ? st_EX : st_FET; 
             end
               
             st_EX: begin
@@ -182,7 +186,8 @@ module CU_FSM(
                 pcWrite = 0;
                 regWrite = 1; 
                 memRDEN2 = 1;
-                NS = cmd_finish;
+                memAccess = 1;
+                NS = mem_ready ? cmd_finish : st_WB;
             end
             
             st_INTR: begin
