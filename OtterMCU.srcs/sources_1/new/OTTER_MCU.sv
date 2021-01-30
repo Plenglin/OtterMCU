@@ -1,12 +1,12 @@
-`timescale 10ns / 1ns
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: Cal Poly
-// Engineer: Astrid Yu
+// Company: 
+// Engineer:  J. Callenes
 // 
-// Create Date: 04/29/2020 02:27:42 PM
-// Design Name: Main Otter MCU Module
-// Module Name: OTTER_MCU
-// Project Name: Otter MCU
+// Create Date: 01/04/2019 04:32:12 PM
+// Design Name: 
+// Module Name: PIPELINED_OTTER_CPU
+// Project Name: 
 // Target Devices: 
 // Tool Versions: 
 // Description: 
@@ -19,241 +19,132 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
-module OTTER_MCU #(
-    parameter MEM_FILE="otter_memory.mem"
-    ) (
-    input RST,
-    input clk,
-    input [31:0] iobus_in,
-    input intr,
-    output iobus_wr,
-    output [31:0] iobus_out,
-    output [31:0] iobus_addr
-    );
-    
-    // Data buses
-    logic [31:0] 
-        pc, 
-        pc_inc,
-        pc_next,
-        ir, 
-        reg_wd,
-        rs1,
-        rs2,
-
-        alu_src_a_data,
-        alu_src_b_data,
-        alu_result, 
+typedef enum logic [6:0] {
+    LUI      = 7'b0110111,
+    AUIPC    = 7'b0010111,
+    JAL      = 7'b1101111,
+    JALR     = 7'b1100111,
+    BRANCH   = 7'b1100011,
+    LOAD     = 7'b0000011,
+    STORE    = 7'b0100011,
+    OP_IMM   = 7'b0010011,
+    OP       = 7'b0110011,
+    SYSTEM   = 7'b1110011
+} opcode_t;
         
-        jalr, 
-        branch, 
-        jal, 
-        
-        mem_dout,
-        
-        b_type_imm, 
-        i_type_imm, 
-        j_type_imm,
-        s_type_imm,
-        u_type_imm,
-        
-        mepc,
-        mtvec,
-        csr_reg;
-    
-    // Selectors
-    logic [1:0] rf_wr_sel, alu_src_b;
-    logic [2:0] pc_source;
-
-    logic alu_src_a;
+typedef struct packed{
+    opcode_t opcode;
+    logic [4:0] rs1_addr;
+    logic [4:0] rs2_addr;
+    logic [4:0] rd_addr;
+    logic rs1_used;
+    logic rs2_used;
+    logic rd_used;
     logic [3:0] alu_fun;
-    
-    // Flags
-    logic 
-        reset,
-        pc_write,
-        
-        reg_write,
-        
-        mem_we2,
-        mem_rden1,
-        mem_rden2,
-        
-        br_eq,
-        br_lt,
-        br_ltu,
-        
-        int_taken,
-        csr_we,
-        csr_mie;
-    
-    assign iobus_addr = alu_result;
-    assign iobus_out = rs2;
-    
-    // Multiplexers    
-    always_comb case(rf_wr_sel)
-        4'd0: reg_wd = pc + 4;
-        4'd1: reg_wd = csr_reg;
-        4'd2: reg_wd = mem_dout;
-        4'd3: reg_wd = alu_result;
-    endcase
-        
-    assign alu_src_a_data = alu_src_a 
-        ? u_type_imm 
-        : rs1;
+    logic memWrite;
+    logic memRead2;
+    logic regWrite;
+    logic [1:0] rf_wr_sel;
+    logic [2:0] mem_type;  //sign, size
+    logic [31:0] pc;
+} instr_t;
 
-    always_comb case(alu_src_b)
-        4'd0: alu_src_b_data = rs2;
-        4'd1: alu_src_b_data = i_type_imm;
-        4'd2: alu_src_b_data = s_type_imm;
-        4'd3: alu_src_b_data = pc;
-    endcase
+module OTTER_MCU(
+    input CLK,
+    input INTR,
+    input RESET,
+    input [31:0] IOBUS_IN,
+    output [31:0] IOBUS_OUT,
+    output [31:0] IOBUS_ADDR,
+    output logic IOBUS_WR 
+);           
+    wire [6:0] opcode;
+    wire [31:0] pc, pc_value, next_pc, jalr_pc, branch_pc, jump_pc, int_pc,A,B,
+        I_immed,S_immed,U_immed,aluBin,aluAin,aluResult,rfIn,csr_reg, mem_data;
     
-    always_comb case(pc_source) 
-        3'd0: pc_next = pc_inc;
-        3'd1: pc_next = jalr;
-        3'd2: pc_next = branch;
-        3'd3: pc_next = jal;
-        3'd4: pc_next = mtvec;
-        3'd5: pc_next = mepc;
-        default: pc_next = 31'hdeadbeef;
-    endcase
+    wire [31:0] IR;
+    wire memRead1,memRead2;
     
-    CSR csr(
-        .CLK(clk),
-        .RST(reset),
-        
-        .ADDR(ir[31:20]),
+    wire pcWrite,regWrite,memWrite, op1_sel,mem_op,IorD,pcWriteCond,memRead;
+    wire [1:0] opB_sel, rf_sel, wb_sel, mSize;
+    logic [1:0] pc_sel;
+    wire [3:0]alu_fun;
+    wire opA_sel;
+    
+    logic br_lt,br_eq,br_ltu;
+              
+//==== Instruction Fetch ===========================================
 
-        .INT_TAKEN(int_taken),
-        .WR_EN(csr_we),
-        .PC(pc),
-        .WD(rs1),
-        
-        .CSR_MIE(csr_mie),
-        .CSR_MEPC(mepc),
-        .CSR_MTVEC(mtvec),
-        .RD(csr_reg)
-    );
-        
-    // Submodules
-    CU_FSM fsm(
-        .clk(clk),
-        
-        .RST(RST), 
-        .intr(intr & csr_mie),
-        .opcode(ir[6:0]),
-        .func3(ir[14:12]),
+    logic [31:0] if_de_pc;
 
-        .pcWrite(pc_write),
-        .regWrite(reg_write),
-        .memWE2(mem_we2),
-        .memRDEN1(mem_rden1),
-        .memRDEN2(mem_rden2),
-        
-        .int_taken(int_taken),
-        .csr_we(csr_we),
-        
-        .reset(reset)
-    );
-    
-    BranchCondGen bcg(
-        .rs1(rs1),
-        .rs2(rs2),
-        .br_eq(br_eq),
-        .br_lt(br_lt),
-        .br_ltu(br_ltu)
-    );
-    
-    CU_DCDR cu_dcdr(
-        .opcode(ir[6:0]),
-        .func7(ir[31:25]),
-        .func3(ir[14:12]),
-        
-        .int_taken(int_taken),
-        .br_eq(br_eq),
-        .br_lt(br_lt),
-        .br_ltu(br_ltu),
-        
-        .alu_fun(alu_fun),
-        .pcSource(pc_source),
-        .alu_srcA(alu_src_a),
-        .alu_srcB(alu_src_b), 
-        .rf_wr_sel(rf_wr_sel)
-    );
-    
-    ProgramCounter prog_counter(
-        .clk(clk),
+    always_ff @(posedge CLK) begin
+        if_de_pc <= pc;
+    end
 
-        .pc_write(pc_write),
-        .rst(reset),
-        .next(pc_next),
-        
-        .addr(pc),
-        .addr_inc(pc_inc)
-    );
+    assign pcWrite = 1'b1;  //Hardwired high, assuming now hazards
+    assign memRead1 = 1'b1;     //Fetch new instruction every cycle
 
-    Memory #(.MEM_FILE(MEM_FILE)) mem(
-        .MEM_CLK (clk),
-        
-        .MEM_RDEN1 (mem_rden1),
-        .MEM_RDEN2 (mem_rden2),
-        .MEM_WE2 (mem_we2),
-        .MEM_ADDR1 (pc[15:2]),
-        .MEM_ADDR2 (alu_result),
-        .MEM_DIN2 (rs2),
-        .MEM_SIZE (ir[13:12]),
-        .MEM_SIGN (ir[14]),
-        .IO_IN (iobus_in),
-        .IO_WR (iobus_wr),
-        
-        .MEM_DOUT1 (ir),
-        .MEM_DOUT2 (mem_dout) 
-    );
-    MemoryDelay #(.LATENCY(10)) mem_delay(.clk(clk), .access(fsm.memAccess), .ready(fsm.mem_ready));
+
+
+
+
+
+     
+//==== Instruction Decode ===========================================
+    logic [31:0] de_ex_opA;
+    logic [31:0] de_ex_opB;
+    logic [31:0] de_ex_rs2;
+
+    instr_t de_ex_inst, de_inst;
     
-    RegFile regfile(
-        .clk(clk),
-        
-        .en(reg_write),
-        .wd(reg_wd),
-        .adr1(ir[19:15]),
-        .adr2(ir[24:20]),
-        .wa(ir[11:7]),
-        
-        .rs1(rs1),
-        .rs2(rs2)
-    );
+    opcode_t OPCODE;
+    assign OPCODE_t = opcode_t'(opcode);
     
-    ImmedGen imd(
-        .ir(ir[31:7]),
-        
-        .b_type_imm(b_type_imm),
-        .i_type_imm(i_type_imm),
-        .u_type_imm(u_type_imm),
-        .j_type_imm(j_type_imm),
-        .s_type_imm(s_type_imm)
-    );
+    assign de_inst.rs1_addr=IR[19:15];
+    assign de_inst.rs2_addr=IR[24:20];
+    assign de_inst.rd_addr=IR[11:7];
+    assign de_inst.opcode=OPCODE;
+   
+    assign de_inst.rs1_used =   de_inst.rs1 != 0
+                                && de_inst.opcode != LUI
+                                && de_inst.opcode != AUIPC
+                                && de_inst.opcode != JAL;
+
+     
     
-    BranchAddrGen bag(
-        .rs(rs1),
-        .pc(pc),
-        .b_type_imm(b_type_imm),
-        .j_type_imm(j_type_imm),
-        .i_type_imm(i_type_imm),
-        
-        .jalr(jalr),
-        .branch(branch),
-        .jal(jal)
-    );
     
-    ALU alu(
-        .alu_fun(alu_fun),
-        .srcA(alu_src_a_data),
-        .srcB(alu_src_b_data),
-        
-        .result(alu_result)
-    );
     
+//==== Execute ======================================================
+    logic [31:0] ex_mem_rs2;
+    logic ex_mem_aluRes = 0;
+    instr_t ex_mem_inst;
+    logic [31:0] opA_forwarded;
+    logic [31:0] opB_forwarded;
+     
+     // Creates a RISC-V ALU
+    OTTER_ALU ALU (de_ex_inst.alu_fun, de_ex_opA, de_ex_opB, aluResult); // the ALU
+     
+
+
+
+
+//==== Memory ======================================================
+     
+     
+    assign IOBUS_ADDR = ex_mem_aluRes;
+    assign IOBUS_OUT = ex_mem_rs2;
+    
+ 
+ 
+ 
+     
+//==== Write Back ==================================================
+     
+
+
+ 
+ 
+
+       
+            
 endmodule
