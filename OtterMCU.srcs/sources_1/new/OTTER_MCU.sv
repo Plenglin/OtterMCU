@@ -10,11 +10,12 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     output [31:0] IOBUS_ADDR,
     output logic IOBUS_WR 
 );
+    wire jalr, branch, jal, pcSource;
     assign pc_write = 1'b1;
     assign mem_read1 = 1'b1;
     
     Memory #(.MEM_FILE(MEM_FILE)) memory(.MEM_RDEN1(mem_read1));
-    RegFile regfile;
+    RegFile regfile();
               
     IFStage if_stage(
         .clk(CLK),
@@ -33,14 +34,14 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     EXStage ex_stage(
         .clk(CLK),
         .reset(RESET),
-        .prev(if_stage.result),
-        .regfile(regfile)
+        .prev(if_stage.result)
     );
         
     MEMStage mem_stage(
         .clk(CLK),
         .reset(RESET),
-        .prev(ex_stage.result)
+        .prev(ex_stage.result),
+        .mem(memory)
     );
         
     WBStage wb_stage(

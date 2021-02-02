@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: Ratner Engineering
-// 
-// Create Date: 01/29/2020 12:28:22 PM
-// Design Name: 
-// Module Name: RegFile
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: RIsC-V OTTER Register File Model: 32 x 32
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 1.00 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module RegFile(
     input [31:0] wd,
