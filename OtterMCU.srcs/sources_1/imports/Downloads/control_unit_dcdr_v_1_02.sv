@@ -1,39 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: Ratner Surf Designs
-// Engineer: James Ratner
-// 
-// Create Date: 01/29/2019 04:56:13 PM
-// Design Name: 
-// Module Name: CU_Decoder
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies:
-// 
-// CU_DCDR my_cu_dcdr(
-//   .br_eq     (), 
-//   .br_lt     (), 
-//   .br_ltu    (),
-//   .opcode    (),    //-  ir[6:0]
-//   .func7     (),    //-  ir[31:25]
-//   .func3     (),    //-  ir[14:12] 
-//   .alu_fun   (),
-//   .pcSource  (),
-//   .alu_srcA  (),
-//   .alu_srcB  (), 
-//   .rf_wr_sel ()   );
-//
-// 
-// Revision:
-// Revision 1.00 - File Created (02-01-2020) - from Paul, Joseph, & Celina
-//          1.01 - (02-08-2020) - removed unneeded else's; fixed assignments
-//          1.02 - (02-25-2020) - made all assignments blocking
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module CU_DCDR(
     input br_eq, 
