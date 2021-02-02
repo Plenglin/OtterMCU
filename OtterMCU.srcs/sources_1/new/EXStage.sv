@@ -16,8 +16,8 @@ module EXStage(
     );
     
     BranchCondGen bcg(
-        .rs1(prev.rs1),
-        .rs2(prev.rs2)
+        .rs1(prev.alu_a),
+        .rs2(prev.alu_b)
     );
     BranchAddrGen bag();
         

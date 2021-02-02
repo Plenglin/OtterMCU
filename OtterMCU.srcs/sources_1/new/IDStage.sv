@@ -2,7 +2,10 @@
 
 module IDStage(
     input IFID_t prev,
-    RegFile regfile,
+    output [4:0] adr1,
+    output [4:0] adr2,
+    input [31:0] rs1,
+    input [31:0] rs2,
     output IDEX_t result
 );
 
@@ -17,14 +20,20 @@ module IDStage(
         .br_ltu(br_ltu)
     );
 
-    ImmedGen imm_gen(.ir(prev.ir));
-    
-    assign result.alu_a = cu_dcdr.alu_src_a
-            ? imm_gen.u_type_imm 
-            : regfile.rs1;
+
+    ImmedGen imm_gen(
+        .ir(prev.ir[31:7])
+    );
         
-    always_comb case(cu_dcdr.alu_src_b)
-        4'd0: result.alu_b = regfile.rs2;
+    assign adr1 = prev.ir[19:15];
+    assign adr2 = prev.ir[24:20];
+    
+    assign result.alu_a = cu_dcdr.alu_srcA
+            ? imm_gen.u_type_imm 
+            : rs1;
+        
+    always_comb case(cu_dcdr.alu_srcB)
+        4'd0: result.alu_b = rs2;
         4'd1: result.alu_b = imm_gen.i_type_imm;
         4'd2: result.alu_b = imm_gen.s_type_imm;
         4'd3: result.alu_b = prev.pc;

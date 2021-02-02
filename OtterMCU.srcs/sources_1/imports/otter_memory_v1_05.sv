@@ -43,7 +43,7 @@
 // Revision 1.06 - removed type in instantiation template
 //
 //////////////////////////////////////////////////////////////////////////////////
-                                                                                                                             
+
 module Memory #(parameter MEM_FILE="otter_memory.mem") (
     input MEM_CLK,
     input MEM_RDEN1,        // read enable Instruction
