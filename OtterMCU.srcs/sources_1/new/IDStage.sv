@@ -1,8 +1,6 @@
 `include "Types.sv"
 
 module IDStage(
-    input clk,
-    input reset,
     input IFID_t prev,
     RegFile regfile,
     output IDEX_t result
@@ -21,19 +19,16 @@ module IDStage(
 
     ImmedGen imm_gen(.ir(prev.ir));
     
-    always_ff @(posedge clk)
-        result.alu_a <= cu_dcdr.alu_src_a
+    assign result.alu_a = cu_dcdr.alu_src_a
             ? imm_gen.u_type_imm 
             : regfile.rs1;
         
-    always_ff @(posedge clk) case(cu_dcdr.alu_src_b)
-        4'd0: result.alu_b <= regfile.rs2;
-        4'd1: result.alu_b <= imm_gen.i_type_imm;
-        4'd2: result.alu_b <= imm_gen.s_type_imm;
-        4'd3: result.alu_b <= prev.pc;
+    always_comb case(cu_dcdr.alu_src_b)
+        4'd0: result.alu_b = regfile.rs2;
+        4'd1: result.alu_b = imm_gen.i_type_imm;
+        4'd2: result.alu_b = imm_gen.s_type_imm;
+        4'd3: result.alu_b = prev.pc;
     endcase
     
-    always_ff @(posedge clk) begin
-        result.wb.rf_wr_sel <= cu_dcdr.rf_wr_sel;
-    end
+    assign result.wb.rf_wr_sel = cu_dcdr.rf_wr_sel;
 endmodule

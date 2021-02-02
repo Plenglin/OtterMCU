@@ -24,6 +24,8 @@ typedef struct packed{
 } st_MEM_t;
 
 typedef struct packed{
+    logic alu_src;
+    logic [3:0] alu_fun;
     logic rf_wr_sel;
     logic [4:0] rf_wr_addr;
     logic reg_wr_en;

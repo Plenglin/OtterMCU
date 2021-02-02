@@ -12,8 +12,6 @@ module IFStage(
     
     assign mem.MEM_ADDR1 = program_counter.pc;
     
-    always_ff @(posedge clk) begin
-        result.ir <= mem.MEM_DOUT1;
-        result.pc <= program_counter.pc; 
-    end
+    assign result.ir = mem.MEM_DOUT1;
+    assign result.pc = program_counter.pc; 
 endmodule
