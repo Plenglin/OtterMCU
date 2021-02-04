@@ -23,4 +23,5 @@
 module PipelineTest(
 
     );
+    OTTER_MCU mcu();
 endmodule

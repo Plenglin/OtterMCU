@@ -13,7 +13,8 @@ module CU_DCDR(
     output logic [2:0] pcSource,
     output logic alu_srcA,
     output logic [1:0] alu_srcB, 
-    output logic [1:0] rf_wr_sel
+    output logic [1:0] rf_wr_sel,
+    output logic [1:0] rf_wr_en
     );
     
     //- datatypes for RISC-V opcode types
@@ -73,6 +74,7 @@ module CU_DCDR(
         //- schedule all values to avoid latch
         pcSource = 3'd0; // next
         rf_wr_sel = 2'd0;  // pc_inc 
+        rf_wr_en = 0;
         
         alu_srcA = 1'b0;   
         alu_srcB = 2'b00;    
@@ -82,12 +84,14 @@ module CU_DCDR(
             pcSource = 3'd4;  // mtvec 
         end else case(OPCODE)
             LUI: begin
+                rf_wr_en = 1;
                 alu_fun = 4'b1001;   // lui
                 alu_srcA = 1;        // u-imm 
                 rf_wr_sel = 2'b11;   // alu_result
             end
             
             AUIPC: begin
+                rf_wr_en = 1;
                 alu_fun = 4'b0000;   // add
                 alu_srcA = 1;        // u-imm
                 alu_srcB = 2'd3;     // pc
@@ -95,11 +99,13 @@ module CU_DCDR(
             end
             
             JAL: begin
+                rf_wr_en = 1;
                 rf_wr_sel = 2'd0;   // next pc
                 pcSource = 3'd3;     // jal
             end
             
             JALR: begin
+                rf_wr_en = 1;
                 rf_wr_sel = 2'd0;   // next pc
                 pcSource = 3'd1;       // jalr
             end
@@ -112,15 +118,17 @@ module CU_DCDR(
             end
             
             STORE: begin
+                rf_wr_en = 1;
                 alu_fun = 4'b0000;     // add
                 alu_srcA = 1'b0;       // rs1
                 alu_srcB = 2'd2;       // s imm
             end
             
-            BRANCH: 
+            BRANCH: begin
                 pcSource = branch_cond   // Invert if invert bit 
                     ? 3'd2      // Condition success, branch
                     : 3'd0;     // Condition fail, next
+            end
             
             OP_IMM: begin
                 pcSource = 3'd0;  // next
@@ -131,6 +139,7 @@ module CU_DCDR(
             end
             
             OP_RG3: begin
+                rf_wr_en = 1;
                 pcSource = 3'd0;  // next
                 alu_srcA = 0;   // rs1
                 alu_srcB = 2'd0;   // rs2
@@ -139,6 +148,7 @@ module CU_DCDR(
             end
             
             OP_INT: if (func3[0]) begin  // csrrw
+                rf_wr_en = 1;
                 rf_wr_sel = 2'd1;  // csr_reg
                 pcSource = 3'd0;  // next
             end else begin  // mret

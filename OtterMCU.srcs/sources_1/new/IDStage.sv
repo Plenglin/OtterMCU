@@ -1,6 +1,8 @@
 `include "Types.sv"
 
 module IDStage(
+    input [31:0] pc,
+    input [31:0] ir,
     input IFID_t prev,
     output [4:0] adr1,
     output [4:0] adr2,
@@ -10,9 +12,9 @@ module IDStage(
 );
 
     CU_DCDR cu_dcdr(
-        .opcode(prev.ir[6:0]),
-        .func7(prev.ir[31:25]),
-        .func3(prev.ir[14:12]),
+        .opcode(ir[6:0]),
+        .func7(ir[31:25]),
+        .func3(ir[14:12]),
         
         .int_taken(int_taken),
         .br_eq(br_eq),
@@ -22,11 +24,11 @@ module IDStage(
 
 
     ImmedGen imm_gen(
-        .ir(prev.ir[31:7])
+        .ir(ir[31:7])
     );
         
-    assign adr1 = prev.ir[19:15];
-    assign adr2 = prev.ir[24:20];
+    assign adr1 = ir[19:15];
+    assign adr2 = ir[24:20];
     
     assign result.alu_a = cu_dcdr.alu_srcA
             ? imm_gen.u_type_imm 
@@ -40,5 +42,6 @@ module IDStage(
     endcase
     
     assign result.wb.rf_wr_sel = cu_dcdr.rf_wr_sel;
-    assign result.we.rf_wr_sel = cu_dcdr.rf_wr_en;
+    assign result.wb.rf_wr_en = cu_dcdr.rf_wr_en;
+    assign result.pc = pc;
 endmodule
