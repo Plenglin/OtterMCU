@@ -20,20 +20,22 @@ typedef struct packed{
 
 typedef struct packed{
     logic alu_src;
+    logic memWrite;
+    logic [1:0] size;
     logic [3:0] alu_fun;
+    logic [31:0] rs2;
 } st_MEM_t;
 
 typedef struct packed{
     logic alu_src;
     logic [3:0] alu_fun;
-    logic rf_wr_sel;
-    logic [4:0] rf_wr_addr;
-    logic reg_wr_en;
+    logic [1:0] rf_wr_sel;
+    logic [4:0] wa;
+    logic we;
 } st_WB_t;
 
 typedef struct packed{
     logic [31:0] pc;
-    logic [31:0] ir;
 } IFID_t;
 
 typedef struct packed{
@@ -49,16 +51,14 @@ typedef struct packed{
 typedef struct packed{
     logic [31:0] pc;
     logic [31:0] alu_result;
-    opcode_t opcode;
     st_MEM_t mem;
     st_WB_t wb;
 } EXMEM_t;
 
 typedef struct packed{
     logic [31:0] pc;
-    logic [31:0] reg_1;
-    logic [31:0] reg_2;
-    opcode_t opcode;
+    logic [31:0] dout;
+    logic [31:0] alu_result;
     st_WB_t wb;
 } MEMWB_t;
 

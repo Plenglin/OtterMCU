@@ -40,4 +40,5 @@ module IDStage(
     endcase
     
     assign result.wb.rf_wr_sel = cu_dcdr.rf_wr_sel;
+    assign result.we.rf_wr_sel = cu_dcdr.rf_wr_en;
 endmodule

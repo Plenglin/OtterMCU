@@ -24,6 +24,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .clk(CLK)
     );
 
+    //////// IF ////////
+    
     IFStage if_stage(
         .clk(CLK),
         .reset(RESET),
@@ -35,10 +37,11 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     );
     IFID_t if_result;
     assign if_result = '{
-        pc: if_stage.pc,
-        ir: memory.MEM_DOUT1
+        pc: if_stage.pc
     };
     
+    //////// ID ////////
+
     PipelineRegister #(.SIZE($bits(IFID_t))) if_id_reg(
         .clk(CLK),
         .flush(RESET),
@@ -47,11 +50,14 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         
     IDStage id_stage(
         .prev(if_id_reg.out_data),
+        .ir(memory.MEM_DOUT1),
         .adr1(regfile.adr1),
         .adr2(regfile.adr2),
         .rs1(regfile.rs1),
         .rs2(regfile.rs2)
     );
+
+    //////// EX ////////
     
     PipelineRegister #(.SIZE($bits(IDEX_t))) id_ex_reg(
         .clk(CLK),
@@ -65,28 +71,44 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .prev(id_ex_reg.out_data)
     );
     
+    //////// MEM ////////
+
     PipelineRegister #(.SIZE($bits(EXMEM_t))) ex_mem_reg(
         .clk(CLK),
         .flush(RESET),
         .in_data(ex_stage.result) 
     );
-        
-    MEMStage mem_stage(
-        .clk(CLK),
-        .reset(RESET),
-        .prev(ex_mem_reg.out_data)
-    );
+    
+    EXMEM_t mem_input;
+    assign mem_input = ex_mem_reg.out_data;
+    
+    assign mem.MEM_WE2 = mem_input.mem.memWrite;
+    assign mem.MEM_RDEN2 = mem_input.mem.memRead2;
+    assign mem.MEM_SIZE = mem_input.mem.size;
+    assign mem.MEM_DIN2 = mem_input.mem.rs2;
+    assign mem.MEM_ADDR2 = mem_input.alu_result;
+    
+    MEMWB_t mem_result;
+    assign mem_result = '{
+        pc: mem_input.pc,
+        alu_result: mem_input.alu_result,
+        dout: mem.MEM_DOUT2,
+        wb: mem_input.wb
+    };
+    
+    //////// WB ////////
     
     PipelineRegister #(.SIZE($bits(MEMWB_t))) mem_wb_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(mem_stage.result)    
+        .in_data(mem_result)    
     );
-        
+    
     WBStage wb_stage(
-        .clk(CLK),
-        .reset(RESET),
-        .prev(mem_wb_reg.out_data)
+        .prev(mem_wb_reg.out_data),
+        .wd(regfie.wd),
+        .wa(regfile.wa),
+        .we(regfile.en)
     );
     
 endmodule
