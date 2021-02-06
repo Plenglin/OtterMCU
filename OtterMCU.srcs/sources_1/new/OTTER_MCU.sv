@@ -12,7 +12,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     output logic IOBUS_WR 
 );
     logic [31:0] jalr, branch, jal, pc;
-    logic [1:0] pc_source;
+    logic [1:0] pc_source = 0;
     assign pc_write = 1'b1;
     assign mem_read1 = 1'b1;
     
