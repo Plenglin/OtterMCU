@@ -5,8 +5,8 @@ module PipelineRegister#(parameter SIZE=1)(
         input flush = 0,
         input hold = 0,
         input [SIZE-1:0] flush_data = 0,
-        output [SIZE-1:0] in_data, 
-        output reg [SIZE-1:0] out_data
+        input [SIZE-1:0] in_data, 
+        output logic [SIZE-1:0] out_data
     );
     always_ff @(posedge clk) begin
         if (flush) 

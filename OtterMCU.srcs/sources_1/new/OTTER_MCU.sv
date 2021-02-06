@@ -11,14 +11,16 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     output [31:0] IOBUS_ADDR,
     output logic IOBUS_WR 
 );
-    logic [31:0] jalr, branch, jal;
+    logic [31:0] jalr, branch, jal, pc;
     logic [1:0] pc_source;
     assign pc_write = 1'b1;
     assign mem_read1 = 1'b1;
     
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
-        .MEM_RDEN1(mem_read1)
+        .MEM_RDEN1(mem_read1),
+        .MEM_RDEN2(0),
+        .MEM_ADDR1(pc)
     );
 
     RegFile regfile(
@@ -34,22 +36,19 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .branch(branch),
         .jal(jal),
         .pc_source(pc_source),
-        .pc_write(pc_write)
+        .pc_write(pc_write),
+        .pc(pc)
     );
-    IFID_t if_result;
-    assign if_result = '{
-        pc: if_stage.pc
-    };
     
     //////// ID ////////
 
     PipelineRegister #(.SIZE($bits(IFID_t))) if_id_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(if_result)
+        .in_data(pc)
     );
         
-    IDStage id_stage(
+    /*IDStage id_stage(
         .prev(if_id_reg.out_data),
         .ir(mem.MEM_DOUT1),
         .adr1(regfile.adr1),
@@ -111,6 +110,6 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .wd(regfile.wd),
         .wa(regfile.wa),
         .we(regfile.en)
-    );
+    );*/
     
 endmodule

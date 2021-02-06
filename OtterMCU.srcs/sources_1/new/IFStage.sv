@@ -25,6 +25,4 @@ module IFStage(
         4'd2: pc_next = branch;
         4'd3: pc_next = jal;
     endcase
-        
-    assign pc = program_counter.pc;
 endmodule
