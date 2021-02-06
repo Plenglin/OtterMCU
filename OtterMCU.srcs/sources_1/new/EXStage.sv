@@ -20,7 +20,8 @@ module EXStage(
         .rs2(prev.alu_b)
     );
     BranchAddrGen bag();
-        
+    
+    assign result.pc = prev.pc;
     assign result.mem = prev.mem;
     assign result.wb = prev.wb;
     assign result.alu_result = alu.result;

@@ -65,7 +65,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .in_data(id_stage.result)
     );
         
-    /*EXStage ex_stage(
+    EXStage ex_stage(
         .clk(CLK),
         .reset(RESET),
         .prev(id_ex_reg.out_data)
@@ -73,6 +73,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     
     //////// MEM ////////
 
+/*
     PipelineRegister #(.SIZE($bits(EXMEM_t))) ex_mem_reg(
         .clk(CLK),
         .flush(RESET),
