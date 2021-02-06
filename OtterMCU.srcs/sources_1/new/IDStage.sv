@@ -47,4 +47,9 @@ module IDStage(
     endcase
     
     assign result.pc = prev.pc;
+    
+    assign result.mem.size = ir[13:12];
+    assign result.mem.sign = ir[14];
+    assign result.mem.rs2 = rs2; 
+    assign result.wb.wa = ir[11:7];
 endmodule

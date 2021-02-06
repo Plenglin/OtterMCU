@@ -42,18 +42,15 @@ typedef enum logic [1:0] {
 } alusrcB_t;
 
 typedef struct packed{
-    logic alu_src;
     logic write;
     logic read;
-    logic [1:0] size;
-    logic [3:0] alu_fun;
+    logic sign;
     logic [31:0] rs2;
+    logic [1:0] size;
 } st_MEM_t;
 
 typedef struct packed{
-    logic alu_src;
     logic rf_wr_en;
-    logic [3:0] alu_fun;
     logic [1:0] rf_wr_sel;
     logic [4:0] wa;
 } st_WB_t;

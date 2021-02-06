@@ -81,7 +81,7 @@ module CU_DCDR(
         
         alu_srcA = 1'b0;   
         alu_srcB = 2'b00;    
-        alu_fun  = 4'b0000;
+        alu_fun = 4'b0000;
         
         mem_read = 0;
         mem_write = 0;
