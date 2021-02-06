@@ -48,7 +48,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .in_data(pc)
     );
         
-    /*IDStage id_stage(
+    IDStage id_stage(
         .prev(if_id_reg.out_data),
         .ir(mem.MEM_DOUT1),
         .adr1(regfile.adr1),
@@ -65,7 +65,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .in_data(id_stage.result)
     );
         
-    EXStage ex_stage(
+    /*EXStage ex_stage(
         .clk(CLK),
         .reset(RESET),
         .prev(id_ex_reg.out_data)

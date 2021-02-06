@@ -14,7 +14,10 @@ module CU_DCDR(
     output logic alu_srcA,
     output logic [1:0] alu_srcB, 
     output logic [1:0] rf_wr_sel,
-    output logic [1:0] rf_wr_en
+    output logic [1:0] rf_wr_en,
+    
+    output logic mem_write,
+    output logic mem_read
     );
     
     //- datatypes for RISC-V opcode types
@@ -80,6 +83,9 @@ module CU_DCDR(
         alu_srcB = 2'b00;    
         alu_fun  = 4'b0000;
         
+        mem_read = 0;
+        mem_write = 0;
+        
         if (int_taken) begin
             pcSource = 3'd4;  // mtvec 
         end else case(OPCODE)
@@ -115,6 +121,7 @@ module CU_DCDR(
                 alu_srcA = 0;          // rs1
                 alu_srcB = 2'd1;       // i imm
                 rf_wr_sel = 2'd2;      // mem dout
+                mem_read = 1;
             end
             
             STORE: begin
@@ -122,6 +129,7 @@ module CU_DCDR(
                 alu_fun = 4'b0000;     // add
                 alu_srcA = 1'b0;       // rs1
                 alu_srcB = 2'd2;       // s imm
+                mem_write = 1;
             end
             
             BRANCH: begin

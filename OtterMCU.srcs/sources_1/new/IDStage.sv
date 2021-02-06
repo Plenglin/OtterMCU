@@ -1,7 +1,6 @@
 `include "Types.sv"
 
 module IDStage(
-    input [31:0] pc,
     input [31:0] ir,
     input IFID_t prev,
     output [4:0] adr1,
@@ -19,9 +18,15 @@ module IDStage(
         .int_taken(int_taken),
         .br_eq(br_eq),
         .br_lt(br_lt),
-        .br_ltu(br_ltu)
+        .br_ltu(br_ltu),
+        .alu_fun(result.alu_fun),
+        
+        .rf_wr_sel(result.wb.rf_wr_sel),
+        .rf_wr_en(result.wb.rf_wr_en),
+        
+        .mem_read(result.mem.read),
+        .mem_write(result.mem.write)
     );
-
 
     ImmedGen imm_gen(
         .ir(ir[31:7])
@@ -41,7 +46,5 @@ module IDStage(
         4'd3: result.alu_b = prev.pc;
     endcase
     
-    assign result.wb.rf_wr_sel = cu_dcdr.rf_wr_sel;
-    assign result.wb.rf_wr_en = cu_dcdr.rf_wr_en;
-    assign result.pc = pc;
+    assign result.pc = prev.pc;
 endmodule
