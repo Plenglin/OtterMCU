@@ -18,8 +18,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
-        .MEM_RDEN1(mem_read1),
-        .MEM_RDEN2(0)
+        .MEM_RDEN1(mem_read1)
     );
 
     RegFile regfile(
@@ -99,7 +98,6 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     };
     
     //////// WB ////////
-/*
     
     PipelineRegister #(.SIZE($bits(MEMWB_t))) mem_wb_reg(
         .clk(CLK),
@@ -113,6 +111,6 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .wd(regfile.wd),
         .wa(regfile.wa),
         .we(regfile.en)
-    );*/
+    );
     
 endmodule
