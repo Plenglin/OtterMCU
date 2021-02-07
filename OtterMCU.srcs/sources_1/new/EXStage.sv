@@ -12,7 +12,8 @@ module EXStage(
     ALU alu(
         .srcA(prev.alu_a), 
         .srcB(prev.alu_b), 
-        .alu_fun(prev.alu_fun)
+        .alu_fun(prev.alu_fun),
+        .result(result.alu_result)
     );
     
     BranchCondGen bcg(
@@ -24,5 +25,4 @@ module EXStage(
     assign result.pc = prev.pc;
     assign result.mem = prev.mem;
     assign result.wb = prev.wb;
-    assign result.alu_result = alu.result;
 endmodule

@@ -32,8 +32,13 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .MEM_WE2(mem_input.mem.write),
         .MEM_SIZE(mem_input.mem.size),
         .MEM_SIGN(mem_input.mem.sign),
-        .MEM_DIN2(mem_input.mem.rs2)
+        .MEM_DIN2(mem_input.mem.rs2),
+        
+        .IO_IN(IOBUS_IN),
+        .IO_WR(IOBUS_WR)
     );
+    assign IOBUS_OUT = mem_input.mem.rs2;
+    assign IOBUS_ADDR = mem_input.alu_result;
 
     logic [31:0] wb_wd, id_rs1, id_rs2;
     logic [4:0] id_adr1, id_adr2, wb_wa; 
