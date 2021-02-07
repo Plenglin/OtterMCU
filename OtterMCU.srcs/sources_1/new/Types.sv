@@ -64,6 +64,8 @@ typedef struct packed{
     logic [3:0] alu_fun;
     logic [31:0] alu_a;
     logic [31:0] alu_b;
+    logic [31:0] j_imm;
+    logic [31:0] b_imm;
     st_MEM_t mem;
     st_WB_t wb;
 } IDEX_t;

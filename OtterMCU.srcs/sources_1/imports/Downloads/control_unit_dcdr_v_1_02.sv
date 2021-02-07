@@ -14,7 +14,7 @@ module CU_DCDR(
     output logic alu_srcA,
     output logic [1:0] alu_srcB, 
     output logic [1:0] rf_wr_sel,
-    output logic [1:0] rf_wr_en,
+    output logic rf_wr_en,
     
     output logic mem_write,
     output logic mem_read

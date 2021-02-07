@@ -28,21 +28,27 @@ module IDStage(
         .mem_write(result.mem.write)
     );
 
+    logic [31:0] u_imm, i_imm, s_imm;
     ImmedGen imm_gen(
-        .ir(ir[31:7])
+        .ir(ir[31:7]),
+        .j_type_imm(result.j_imm),
+        .i_type_imm(i_imm),
+        .b_type_imm(result.b_imm),
+        .u_type_imm(u_imm),
+        .s_type_imm(s_imm)
     );
         
     assign adr1 = ir[19:15];
     assign adr2 = ir[24:20];
     
     assign result.alu_a = cu_dcdr.alu_srcA
-            ? imm_gen.u_type_imm 
+            ? u_imm 
             : rs1;
         
     always_comb case(cu_dcdr.alu_srcB)
         4'd0: result.alu_b = rs2;
-        4'd1: result.alu_b = imm_gen.i_type_imm;
-        4'd2: result.alu_b = imm_gen.s_type_imm;
+        4'd1: result.alu_b = i_imm;
+        4'd2: result.alu_b = s_imm;
         4'd3: result.alu_b = pc;
     endcase
     
