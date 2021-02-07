@@ -11,14 +11,15 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     output [31:0] IOBUS_ADDR,
     output logic IOBUS_WR 
 );
-    logic [31:0] jalr, branch, jal;
+    logic [31:0] jalr, branch, jal, if_pc;
     logic [1:0] pc_source = 0;
     assign pc_write = 1'b1;
     assign mem_read1 = 1'b1;
     
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
-        .MEM_RDEN1(mem_read1)
+        .MEM_RDEN1(mem_read1),
+        .MEM_ADDR1(if_pc[15:2])
     );
 
     RegFile regfile(
@@ -35,22 +36,22 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .jal(jal),
         .pc_source(pc_source),
         .pc_write(pc_write),
-        .pc(mem.MEM_ADDR1)
+        .pc(if_pc)
     );
     
     //////// ID ////////
 
-    PipelineRegister #(.SIZE($bits(IFID_t))) if_id_reg(
+    logic [31:0] id_pc;
+    PipelineRegister #(.SIZE(32)) if_id_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(if_stage.pc)
+        .in_data(if_pc),
+        .out_data(id_pc)
     );
     
-    IFID_t id_in;
-    assign id_in = if_id_reg.out_data;
     IDEX_t id_out;
     IDStage id_stage(
-        .prev(id_in),
+        .pc(id_pc),
         .ir(mem.MEM_DOUT1),
         .adr1(regfile.adr1),
         .adr2(regfile.adr2),
@@ -61,27 +62,30 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 
     //////// EX ////////
     
+    IDEX_t ex_in;
     PipelineRegister #(.SIZE($bits(IDEX_t))) id_ex_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(id_out)
+        .in_data(id_out),
+        .out_data(ex_in)
     );
     
+    EXMEM_t ex_out;
     EXStage ex_stage(
         .clk(CLK),
         .reset(RESET),
-        .prev(id_ex_reg.out_data)
+        .prev(ex_in),
+        .result(ex_out)
     );
     
     //////// MEM ////////
+    EXMEM_t mem_input;
     PipelineRegister #(.SIZE($bits(EXMEM_t))) ex_mem_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(ex_stage.result) 
+        .in_data(ex_out),
+        .out_data(mem_input)
     );
-    
-    EXMEM_t mem_input;
-    assign mem_input = ex_mem_reg.out_data;
     
     assign mem.MEM_WE2 = mem_input.mem.write;
     assign mem.MEM_RDEN2 = mem_input.mem.read;
@@ -99,14 +103,16 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     
     //////// WB ////////
     
+    MEMWB_t wb_in;
     PipelineRegister #(.SIZE($bits(MEMWB_t))) mem_wb_reg(
         .clk(CLK),
         .flush(RESET),
-        .in_data(mem_result)    
+        .in_data(mem_result),
+        .out_data(wb_in)    
     );
     
     WBStage wb_stage(
-        .prev(mem_wb_reg.out_data),
+        .prev(wb_in),
         .mem_dout(mem.MEM_DOUT2),
         .wd(regfile.wd),
         .wa(regfile.wa),

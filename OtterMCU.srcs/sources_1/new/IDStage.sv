@@ -2,7 +2,7 @@
 
 module IDStage(
     input [31:0] ir,
-    input IFID_t prev,
+    input [31:0] pc,
     output [4:0] adr1,
     output [4:0] adr2,
     input [31:0] rs1,
@@ -43,10 +43,10 @@ module IDStage(
         4'd0: result.alu_b = rs2;
         4'd1: result.alu_b = imm_gen.i_type_imm;
         4'd2: result.alu_b = imm_gen.s_type_imm;
-        4'd3: result.alu_b = prev.pc;
+        4'd3: result.alu_b = pc;
     endcase
     
-    assign result.pc = prev.pc;
+    assign result.pc = pc;
     
     assign result.mem.size = ir[13:12];
     assign result.mem.sign = ir[14];
