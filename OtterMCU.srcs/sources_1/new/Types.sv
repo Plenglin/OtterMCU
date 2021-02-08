@@ -13,6 +13,20 @@ typedef enum logic [6:0] {
     OP_INT   = 7'b1110011 
 } opcode_t;
 
+typedef enum logic [3:0] {
+    alufun_ADD        = 4'b0000,
+    alufun_SUB        = 4'b1000,
+    alufun_OR         = 4'b0110,
+    alufun_AND        = 4'b0111,
+    alufun_XOR        = 4'b0100,
+    alufun_SRL        = 4'b0101,
+    alufun_SLL        = 4'b0001,
+    alufun_SRA        = 4'b1101,
+    alufun_SLT        = 4'b0010,
+    alufun_SLTU       = 4'b0011,
+    alufun_LUI        = 4'b1001
+} alufun_t;
+
 typedef enum logic [2:0] {
     //BRANCH labels
     BEQ = 3'b000,
@@ -50,7 +64,7 @@ typedef enum logic [1:0] {
     alusrc_b_PC = 3
 } alusrcB_t;
 
-typedef struct packed{
+typedef struct packed {
     logic write;
     logic read;
     logic sign;
@@ -58,19 +72,19 @@ typedef struct packed{
     logic [1:0] size;
 } st_MEM_t;
 
-typedef struct packed{
+typedef struct packed {
     logic rf_wr_en;
     logic [1:0] rf_wr_sel;
     logic [4:0] wa;
 } st_WB_t;
 
-typedef struct packed{
+typedef struct packed {
     logic [31:0] pc;
 } IFID_t;
 
-typedef struct packed{
+typedef struct packed {
     logic [31:0] pc;
-    logic [3:0] alu_fun;
+    alufun_t alu_fun;
     logic [31:0] alu_a;
     logic [31:0] alu_b;
     logic [31:0] j_imm;
@@ -82,14 +96,14 @@ typedef struct packed{
     st_WB_t wb;
 } IDEX_t;
 
-typedef struct packed{
+typedef struct packed {
     logic [31:0] pc;
     logic [31:0] alu_result;
     st_MEM_t mem;
     st_WB_t wb;
 } EXMEM_t;
 
-typedef struct packed{
+typedef struct packed {
     logic [31:0] pc;
     logic [31:0] alu_result;
     st_WB_t wb;
