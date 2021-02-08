@@ -10,12 +10,14 @@ module IDStage(
     output IDEX_t result
 );
 
+    opcode_t opcode;
+    assign opcode = opcode_t'(ir[6:0]);
+    func3_t func3;
+    assign func3 = func3_t'(ir[14:12]);
     alusrcA_t srcA;
     alusrcB_t srcB;
     CU_DCDR cu_dcdr(
-        .opcode(ir[6:0]),
-        .func7(ir[31:25]),
-        .func3(ir[14:12]),
+        .ir(ir),
         
         .int_taken(int_taken),
         .br_eq(br_eq),
@@ -61,5 +63,7 @@ module IDStage(
     assign result.mem.size = ir[13:12];
     assign result.mem.sign = ir[14];
     assign result.mem.rs2 = rs2; 
+    assign result.func3 = func3;
+    assign result.opcode = opcode;
     assign result.wb.wa = ir[11:7];
 endmodule

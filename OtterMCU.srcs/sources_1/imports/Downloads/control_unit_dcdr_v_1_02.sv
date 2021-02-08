@@ -6,10 +6,7 @@ module CU_DCDR(
     input br_lt, 
     input br_ltu,
     input int_taken,
-    
-    input [6:0] opcode,   //-  ir[6:0]
-    input [6:0] func7,    //-  ir[31:25]
-    input [2:0] func3,    //-  ir[14:12] 
+    input [31:0] ir,
     output logic [3:0] alu_fun,
     output alusrcA_t alu_srcA,
     output alusrcB_t alu_srcB, 
@@ -20,12 +17,15 @@ module CU_DCDR(
     output logic mem_read
     );
     
-    opcode_t OPCODE; //- define variable of new opcode type
+    logic [6:0] func7;
+    logic [2:0] func3;
+    assign func7 = ir[31:25]; 
+    assign func3 = ir[14:12]; 
     
-    assign OPCODE = opcode_t'(opcode); //- Cast input enum 
+    opcode_t OPCODE; //- define variable of new opcode type
+    assign OPCODE = opcode_t'(ir[6:0]); //- Cast input enum 
 
     func3_t FUNC3; //- define variable of new opcode type
-    
     assign FUNC3 = func3_t'(func3); //- Cast input enum 
     
     // Branch condition selector
@@ -94,11 +94,11 @@ module CU_DCDR(
                 alu_srcA = alusrc_a_RS1;          // rs1
                 alu_srcB = alusrc_b_IIMM;       // i imm
                 rf_wr_sel = 2'd2;      // mem dout
+                rf_wr_en = 1;
                 mem_read = 1;
             end
             
             STORE: begin
-                rf_wr_en = 1;
                 alu_fun = 4'b0000;     // add
                 alu_srcA = alusrc_a_RS1;       // rs1
                 alu_srcB = alusrc_b_SIMM;       // s imm
@@ -110,6 +110,7 @@ module CU_DCDR(
                 alu_srcB = alusrc_b_IIMM;   // i imm
                 rf_wr_sel = 2'd3;  // alu result
                 alu_fun = op_alu_fun;  // translated func
+                rf_wr_en = 1;
             end
             
             OP_RG3: begin

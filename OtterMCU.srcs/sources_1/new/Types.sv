@@ -91,7 +91,6 @@ typedef struct packed{
 
 typedef struct packed{
     logic [31:0] pc;
-    logic [31:0] dout;
     logic [31:0] alu_result;
     st_WB_t wb;
 } MEMWB_t;
