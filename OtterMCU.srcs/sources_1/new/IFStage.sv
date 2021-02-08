@@ -3,7 +3,7 @@
 module IFStage(
     input clk,
     input reset,
-    input [1:0] pc_source,
+    input pcsrc_t pc_source,
     input pc_write,
     input [31:0] jal,
     input [31:0] branch,
@@ -20,9 +20,11 @@ module IFStage(
     );
 
     always_comb case(pc_source)
-        4'd0: pc_next = pc + 4;
-        4'd1: pc_next = jalr;
-        4'd2: pc_next = branch;
-        4'd3: pc_next = jal;
+        pcsrc_NEXT: pc_next = pc + 4;
+        pcsrc_JALR: pc_next = jalr;
+        pcsrc_BRANCH: pc_next = branch;
+        pcsrc_JAL: pc_next = jal;
+        pcsrc_MTVEC: pc_next = 0;  // TODO
+        default: pc_next = 32'hDEADBEEF;  // TODO
     endcase
 endmodule

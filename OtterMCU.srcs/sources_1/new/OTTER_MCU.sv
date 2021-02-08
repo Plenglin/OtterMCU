@@ -11,12 +11,12 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     output [31:0] IOBUS_ADDR,
     output logic IOBUS_WR 
 );
-    logic [31:0] jalr, branch, ja;
-    logic [1:0] pc_source = 0;
+    logic [31:0] jalr, branch, jal;
+    pcsrc_t pc_source;
     assign pc_write = 1'b1;
     assign mem_read1 = 1'b1;
     
-    logic [31:0] if_pc, id_ir, mem_dout;
+    logic [31:0] if_pc, id_ir, wb_dout;
     MEMWB_t mem_result;
     EXMEM_t mem_input;
     Memory #(.MEM_FILE(MEM_FILE)) mem(
@@ -27,7 +27,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         
         .MEM_RDEN2(mem_input.mem.read),
         .MEM_ADDR2(mem_input.alu_result),
-        .MEM_DOUT2(mem_dout),
+        .MEM_DOUT2(wb_dout),
         
         .MEM_WE2(mem_input.mem.write),
         .MEM_SIZE(mem_input.mem.size),
@@ -39,6 +39,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     );
     assign IOBUS_OUT = mem_input.mem.rs2;
     assign IOBUS_ADDR = mem_input.alu_result;
+    
+    assign branch_flush = pc_source != pcsrc_NEXT; 
 
     logic [31:0] wb_wd, id_rs1, id_rs2;
     logic [4:0] id_adr1, id_adr2, wb_wa; 
@@ -59,10 +61,10 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IFStage if_stage(
         .clk(CLK),
         .reset(RESET),
+        .pc_source(pc_source),
         .jalr(jalr),
         .branch(branch),
         .jal(jal),
-        .pc_source(pc_source),
         .pc_write(pc_write),
         .pc(if_pc)
     );
@@ -72,7 +74,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     logic [31:0] id_pc;
     PipelineRegister #(.SIZE(32)) if_id_reg(
         .clk(CLK),
-        .flush(RESET),
+        .flush(RESET | branch_flush),
         .in_data(if_pc),
         .out_data(id_pc)
     );
@@ -93,7 +95,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IDEX_t ex_in;
     PipelineRegister #(.SIZE($bits(IDEX_t))) id_ex_reg(
         .clk(CLK),
-        .flush(RESET),
+        .flush(RESET | branch_flush),
         .in_data(id_out),
         .out_data(ex_in)
     );
@@ -103,6 +105,10 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .clk(CLK),
         .reset(RESET),
         .prev(ex_in),
+        .pc_source(pc_source),
+        .jal(jal),
+        .branch(branch),
+        .jalr(jalr),
         .result(ex_out)
     );
     

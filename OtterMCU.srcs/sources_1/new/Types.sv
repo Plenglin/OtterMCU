@@ -10,9 +10,19 @@ typedef enum logic [6:0] {
     LOAD     = 7'b0000011,
     STORE    = 7'b0100011,
     OP_IMM   = 7'b0010011,
-    OP       = 7'b0110011,
-    SYSTEM   = 7'b1110011
+    OP_RG3   = 7'b0110011, 
+    OP_INT   = 7'b1110011 
 } opcode_t;
+
+typedef enum logic [2:0] {
+    //BRANCH labels
+    BEQ = 3'b000,
+    BNE = 3'b001,
+    BLT = 3'b100,
+    BGE = 3'b101,
+    BLTU = 3'b110,
+    BGEU = 3'b111
+} func3_t;    
 
 typedef enum logic [2:0] {
     pcsrc_NEXT = 0,
@@ -65,7 +75,10 @@ typedef struct packed{
     logic [31:0] alu_a;
     logic [31:0] alu_b;
     logic [31:0] j_imm;
+    logic [31:0] i_imm;
     logic [31:0] b_imm;
+    opcode_t opcode;
+    func3_t func3;
     st_MEM_t mem;
     st_WB_t wb;
 } IDEX_t;
