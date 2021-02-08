@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "Types.sv"
+import Types::*;
 
 module BranchCondGen(
     input opcode_t opcode,

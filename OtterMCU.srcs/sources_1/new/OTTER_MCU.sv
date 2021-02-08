@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "Types.sv"
+import Types::*;
 
 module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 (

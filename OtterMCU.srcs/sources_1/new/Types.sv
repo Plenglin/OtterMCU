@@ -1,5 +1,4 @@
-`ifndef ___TYPES_SV___
-`define ___TYPES_SV___
+package Types;
 
 typedef enum logic [6:0] {
     LUI      = 7'b0110111,
@@ -97,4 +96,4 @@ typedef struct packed{
     st_WB_t wb;
 } MEMWB_t;
 
-`endif
+endpackage

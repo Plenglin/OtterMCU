@@ -1,4 +1,4 @@
-`include "Types.sv"
+import Types::*;
 
 module IDStage(
     input [31:0] ir,

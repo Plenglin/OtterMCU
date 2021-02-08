@@ -1,4 +1,4 @@
-`include "Types.sv"
+import Types::*;
 
 module IFStage(
     input clk,

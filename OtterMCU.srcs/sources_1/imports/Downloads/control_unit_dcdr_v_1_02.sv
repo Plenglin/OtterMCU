@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "Types.sv"
+import Types::*;
 
 module CU_DCDR(
     input br_eq, 
@@ -11,8 +11,8 @@ module CU_DCDR(
     input [6:0] func7,    //-  ir[31:25]
     input [2:0] func3,    //-  ir[14:12] 
     output logic [3:0] alu_fun,
-    output logic alu_srcA,
-    output logic [1:0] alu_srcB, 
+    output alusrcA_t alu_srcA,
+    output alusrcB_t alu_srcB, 
     output logic [1:0] rf_wr_sel,
     output logic rf_wr_en,
     
@@ -55,8 +55,8 @@ module CU_DCDR(
         rf_wr_sel = 2'd0;  // pc_inc 
         rf_wr_en = 0;
         
-        alu_srcA = 1'b0;   
-        alu_srcB = 2'b00;    
+        alu_srcA = alusrc_a_RS1;   
+        alu_srcB = alusrc_b_RS2;    
         alu_fun = 4'b0000;
         
         mem_read = 0;
@@ -67,15 +67,15 @@ module CU_DCDR(
             LUI: begin
                 rf_wr_en = 1;
                 alu_fun = 4'b1001;   // lui
-                alu_srcA = 1;        // u-imm 
+                alu_srcA = alusrc_a_UIMM;        // u-imm 
                 rf_wr_sel = 2'b11;   // alu_result
             end
             
             AUIPC: begin
                 rf_wr_en = 1;
                 alu_fun = 4'b0000;   // add
-                alu_srcA = 1;        // u-imm
-                alu_srcB = 2'd3;     // pc
+                alu_srcA = alusrc_a_UIMM;        // u-imm
+                alu_srcB = alusrc_b_PC;     // pc
                 rf_wr_sel = 2'd3;   // alu_result
             end
             
@@ -91,8 +91,8 @@ module CU_DCDR(
             
             LOAD: begin
                 alu_fun = 4'b0000;     // add
-                alu_srcA = 0;          // rs1
-                alu_srcB = 2'd1;       // i imm
+                alu_srcA = alusrc_a_RS1;          // rs1
+                alu_srcB = alusrc_b_IIMM;       // i imm
                 rf_wr_sel = 2'd2;      // mem dout
                 mem_read = 1;
             end
@@ -100,22 +100,22 @@ module CU_DCDR(
             STORE: begin
                 rf_wr_en = 1;
                 alu_fun = 4'b0000;     // add
-                alu_srcA = 1'b0;       // rs1
-                alu_srcB = 2'd2;       // s imm
+                alu_srcA = alusrc_a_RS1;       // rs1
+                alu_srcB = alusrc_b_SIMM;       // s imm
                 mem_write = 1;
             end
             
             OP_IMM: begin
-                alu_srcA = 1'b0;   // rs1
-                alu_srcB = 2'd1;   // i imm
+                alu_srcA = alusrc_a_RS1;   // rs1
+                alu_srcB = alusrc_b_IIMM;   // i imm
                 rf_wr_sel = 2'd3;  // alu result
                 alu_fun = op_alu_fun;  // translated func
             end
             
             OP_RG3: begin
                 rf_wr_en = 1;
-                alu_srcA = 0;   // rs1
-                alu_srcB = 2'd0;   // rs2
+                alu_srcA = alusrc_a_RS1;   // rs1
+                alu_srcB = alusrc_b_RS2;   // rs2
                 rf_wr_sel = 2'd3;  // alu result
                 alu_fun = op_alu_fun;  // translated func             
             end
@@ -126,9 +126,9 @@ module CU_DCDR(
             end
 
             default: begin
-                 alu_srcB = 2'b00; 
+                 alu_srcA = alusrc_a_RS1; 
+                 alu_srcB = alusrc_b_RS2; 
                  rf_wr_sel = 2'b00; 
-                 alu_srcA = 1'b0; 
                  alu_fun = 4'b0000;
             end
         endcase
