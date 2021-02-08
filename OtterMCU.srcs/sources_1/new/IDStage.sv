@@ -52,10 +52,10 @@ module IDStage(
             : rs1;
         
     always_comb case(srcB)
-        4'd0: result.alu_b = rs2;
-        4'd1: result.alu_b = result.i_imm;
-        4'd2: result.alu_b = s_imm;
-        4'd3: result.alu_b = pc;
+        alusrc_b_RS2: result.alu_b = rs2;
+        alusrc_b_IIMM: result.alu_b = result.i_imm;
+        alusrc_b_SIMM: result.alu_b = s_imm;
+        alusrc_b_PC: result.alu_b = pc;
     endcase
     
     assign result.pc = pc;

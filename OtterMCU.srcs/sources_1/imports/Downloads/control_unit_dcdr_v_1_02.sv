@@ -89,6 +89,11 @@ module CU_DCDR(
                 rf_wr_sel = 2'd0;   // next pc
             end
             
+            BRANCH: begin
+                alu_srcA = alusrc_a_RS1;
+                alu_srcB = alusrc_b_RS2;
+            end
+            
             LOAD: begin
                 alu_fun = 4'b0000;     // add
                 alu_srcA = alusrc_a_RS1;          // rs1

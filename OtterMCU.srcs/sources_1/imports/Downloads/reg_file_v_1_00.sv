@@ -21,12 +21,12 @@ module RegFile(
     
     always_ff @( posedge clk)
     begin
-        if ( (en == 1) && (wa != 0) )
+        if (en && (wa != 0))
             reg_file[wa] <= wd;       
     end
     
     //- asynchronous reads
-    assign rs1 = reg_file[adr1];
-    assign rs2 = reg_file[adr2];
+    assign rs1 = (adr1 == wa && en) ? wd : reg_file[adr1];
+    assign rs2 = (adr2 == wa && en) ? wd : reg_file[adr2];
     
 endmodule
