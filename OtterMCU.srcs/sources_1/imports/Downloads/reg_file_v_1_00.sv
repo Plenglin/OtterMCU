@@ -21,7 +21,7 @@ module RegFile(
     
     always_ff @(posedge clk) begin
         if (en && (wa != 0))
-            reg_file[wa] <= wd;       
+            reg_file[wa] <= wd; 
     end
     
     //- asynchronous reads

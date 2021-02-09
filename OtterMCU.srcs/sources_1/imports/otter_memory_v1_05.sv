@@ -64,6 +64,9 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     logic [31:0] memReadWord, ioBuffer, memReadSized;
     logic [1:0] byteOffset;
     logic weAddrValid;      // active when saving (WE) to valid memory address
+    
+    logic sign;
+    logic [1:0] size;
        
     (* rom_style="{distributed | block}" *)
     (* ram_decomp = "power" *) logic [31:0] memory [0:16383];
@@ -91,7 +94,7 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     
       // save data (WD) to memory (ADDR2)
       if (weAddrValid == 1) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
-        case({MEM_SIZE,byteOffset})
+        case({size,byteOffset})
             4'b0000: memory[wordAddr2][7:0]   <= MEM_DIN2[7:0];     // sb at byte offsets
             4'b0001: memory[wordAddr2][15:8]  <= MEM_DIN2[7:0];
             4'b0010: memory[wordAddr2][23:16] <= MEM_DIN2[7:0];
@@ -110,13 +113,16 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
         if(MEM_RDEN1)                       // need EN for extra load cycle to not change instruction
             MEM_DOUT1 <= memory[MEM_ADDR1];
 
-        if(MEM_RDEN2)                         // Read word from memory
+        if(MEM_RDEN2) begin                        // Read word from memory
             memReadWord <= memory[wordAddr2];
+            sign <= MEM_SIGN;
+            size <= MEM_SIZE;
+        end
     end
        
     // Change the data word into sized bytes and sign extend 
     always_comb begin
-        case({MEM_SIGN,MEM_SIZE,byteOffset})
+        case({sign,size,byteOffset})
             5'b00011: memReadSized = {{24{memReadWord[31]}},memReadWord[31:24]};    // signed byte
             5'b00010: memReadSized = {{24{memReadWord[23]}},memReadWord[23:16]};
             5'b00001: memReadSized = {{24{memReadWord[15]}},memReadWord[15:8]};

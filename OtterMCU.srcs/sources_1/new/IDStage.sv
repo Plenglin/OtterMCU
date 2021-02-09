@@ -34,11 +34,11 @@ module IDStage(
         .mem_write(result.mem.write)
     );
 
-    logic [31:0] u_imm, s_imm;
+    logic [31:0] i_imm, u_imm, s_imm;
     ImmedGen imm_gen(
         .ir(ir[31:7]),
         .j_type_imm(result.j_imm),
-        .i_type_imm(result.i_imm),
+        .i_type_imm(i_imm),
         .b_type_imm(result.b_imm),
         .u_type_imm(u_imm),
         .s_type_imm(s_imm)
@@ -54,7 +54,7 @@ module IDStage(
         
     always_comb case(srcB)
         alusrc_b_RS2: result.alu_b = rs2;
-        alusrc_b_IIMM: result.alu_b = result.i_imm;
+        alusrc_b_IIMM: result.alu_b = i_imm;
         alusrc_b_SIMM: result.alu_b = s_imm;
         alusrc_b_PC: result.alu_b = pc;
     endcase
@@ -64,6 +64,7 @@ module IDStage(
     assign result.mem.size = ir[13:12];
     assign result.mem.sign = ir[14];
     assign result.mem.rs2 = rs2; 
+    assign result.i_imm = i_imm;
     assign result.func3 = func3;
     assign result.opcode = opcode;
     assign result.wb.wa = ir[11:7];
