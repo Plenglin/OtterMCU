@@ -47,9 +47,10 @@ module IDStage(
     assign adr1 = ir[19:15];
     assign adr2 = ir[24:20];
     
-    assign result.alu_a = srcA
-            ? u_imm 
-            : rs1;
+    always_comb case(srcA) 
+        alusrc_a_RS1: result.alu_a = rs1;
+        alusrc_a_UIMM: result.alu_a = u_imm;
+    endcase
         
     always_comb case(srcB)
         alusrc_b_RS2: result.alu_b = rs2;
