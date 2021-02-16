@@ -18,12 +18,12 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+import Types::*;
 
 module ALU(
     input [31:0] srcA,
     input [31:0] srcB,
-    input [3:0] alu_fun,
+    input alufun_t alu_fun,
     output logic [31:0] result
     );
     
@@ -32,17 +32,17 @@ module ALU(
         
     always_comb begin
         case (alu_fun)
-            4'b0000: result = srcA + srcB;                          // add
-            4'b1000: result = srcA - srcB;                          // sub
-            4'b0110: result = srcA | srcB;                          // or
-            4'b0111: result = srcA & srcB;                          // and
-            4'b0100: result = srcA ^ srcB;                          // xor 
-            4'b0101: result = srcA >> shiftB;                       // srl
-            4'b0001: result = srcA << shiftB;                       // sll
-            4'b1101: result = $signed(srcA) >>> shiftB;             // sra
-            4'b0010: result = $signed(srcA) < $signed(srcB);        // slt
-            4'b0011: result = srcA < srcB;                          // sltu
-            4'b1001: result = srcA;                                 // lui
+            alufun_ADD:       result = srcA + srcB;
+            alufun_SUB:       result = srcA - srcB;
+            alufun_OR:        result = srcA | srcB;
+            alufun_AND:       result = srcA & srcB;
+            alufun_XOR:       result = srcA ^ srcB;
+            alufun_SRL:       result = srcA >> shiftB;
+            alufun_SLL:       result = srcA << shiftB;
+            alufun_SRA:       result = $signed(srcA) >>> shiftB;
+            alufun_SLT:       result = $signed(srcA) < $signed(srcB);
+            alufun_SLTU:      result = srcA < srcB;
+            alufun_LUI:       result = srcA;
             default: result = 32'hDEADBEEF;
         endcase
     end

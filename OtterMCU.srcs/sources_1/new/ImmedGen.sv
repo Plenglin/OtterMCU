@@ -32,7 +32,7 @@ module ImmedGen(
     logic isbj_sign;
     assign isbj_sign = ir[31];
     
-    assign i_type_imm = {{21{isbj_sign}}, ir[30:25], ir[24:20]};
+    assign i_type_imm = {{21{isbj_sign}}, ir[30:20]};
     assign s_type_imm = {{21{isbj_sign}}, ir[30:25], ir[11:7]};
     assign b_type_imm = {{20{isbj_sign}}, ir[7], ir[30:25], ir[11:8], 1'b0};
     assign u_type_imm = {ir[31:12], 12'b0};

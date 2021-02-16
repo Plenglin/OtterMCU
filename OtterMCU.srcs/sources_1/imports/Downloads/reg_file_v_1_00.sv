@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: Ratner Engineering
-// 
-// Create Date: 01/29/2020 12:28:22 PM
-// Design Name: 
-// Module Name: RegFile
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: RIsC-V OTTER Register File Model: 32 x 32
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 1.00 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module RegFile(
     input [31:0] wd,
@@ -38,14 +19,26 @@ module RegFile(
             reg_file[i] = 0;
     end
     
-    always_ff @( posedge clk)
-    begin
-        if ( (en == 1) && (wa != 0) )
-            reg_file[wa] <= wd;       
+    always_ff @(posedge clk) begin
+        if (en && (wa != 0))
+            reg_file[wa] <= wd; 
     end
     
     //- asynchronous reads
-    assign rs1 = reg_file[adr1];
-    assign rs2 = reg_file[adr2];
+    always_comb 
+        if (adr1 == 0) 
+            rs1 = 32'b0;
+        else if (adr1 == wa && en)
+            rs1 = wd;
+        else
+            rs1 = reg_file[adr1];
+    
+    always_comb 
+        if (adr2 == 0) 
+            rs2 = 32'b0;
+        else if (adr2 == wa && en)
+            rs2 = wd;
+        else
+            rs2 = reg_file[adr2];
     
 endmodule

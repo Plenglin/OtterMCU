@@ -9,7 +9,7 @@ module Benchmark();
     wire [31:0] iobus_out; 
     wire iobus_wr; 
 
-    OTTER_MCU #(.MEM_FILE("bench.mem"))  my_otter(
+    OTTER_MCU #(.MEM_FILE("test_all.mem"))  my_otter(
      .RST         (RST),
      .intr        (intr),
      .clk         (clk),
@@ -37,9 +37,5 @@ module Benchmark();
         RST = 0;
         start = $time;
         $display("Started", start);
-        forever #1 if (my_otter.prog_counter.addr === 32'h1d4) begin
-             $display("Reached %d in %l", my_otter.prog_counter.addr, $time - start); 
-             $stop;
-        end
     end
 endmodule
