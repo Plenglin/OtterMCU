@@ -52,6 +52,17 @@ typedef enum logic [1:0] {
     regwr_ALU = 3
 } regwr_t;
 
+typedef enum logic [1:0] {
+    fwdsrc_IDEX = 0,
+    fwdsrc_EXMEM = 1,
+    fwdsrc_MEMWB = 2
+} fwdsrc_t;
+
+typedef enum logic {
+    wbfwd_LOAD = 0,
+    wbfwd_ALU = 1
+} wbfwd_t;
+
 typedef enum logic {
     alusrc_a_RS1 = 0,
     alusrc_a_UIMM = 1
@@ -85,6 +96,8 @@ typedef struct packed {
 typedef struct packed {
     logic [31:0] pc;
     alufun_t alu_fun;
+    logic [4:0] alu_a_adr;
+    logic [4:0] alu_b_adr;
     logic [31:0] alu_a;
     logic [31:0] alu_b;
     logic [31:0] j_imm;

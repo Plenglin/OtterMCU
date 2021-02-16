@@ -103,6 +103,15 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .clk(CLK),
         .reset(RESET),
         .prev(ex_in),
+        
+        .exmem_wa(mem_input.wb.wa),
+        .exmem_data(mem_input.alu_result),
+        .exmem_we(mem_input.wb.rf_wr_en),
+        
+        .memwb_wa(wb_wa),
+        .memwb_data(wb_wd),
+        .memwb_we(wb_we),
+        
         .pc_source(pc_source),
         .jal(jal),
         .branch(branch),
