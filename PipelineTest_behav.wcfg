@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="564920fs"></ZoomStartTime>
-      <ZoomEndTime time="592041fs"></ZoomEndTime>
-      <Cursor1Time time="577940fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="27281fs"></ZoomEndTime>
+      <Cursor1Time time="10080fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="72"></ValueColumnWidth>
+      <NameColumnWidth column_width="173"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="14" />
    <wvobject type="logic" fp_name="/PipelineTest/RST">
@@ -145,51 +145,6 @@
       <obj_property name="ElementShortName">result</obj_property>
       <obj_property name="ObjectShortName">result</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.pc">
-         <obj_property name="ElementShortName">.pc[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.pc[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.alu_fun">
-         <obj_property name="ElementShortName">.alu_fun[3:0]</obj_property>
-         <obj_property name="ObjectShortName">.alu_fun[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.alu_a">
-         <obj_property name="ElementShortName">.alu_a[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.alu_a[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.alu_b">
-         <obj_property name="ElementShortName">.alu_b[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.alu_b[31:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.j_imm">
-         <obj_property name="ElementShortName">.j_imm[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.j_imm[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.i_imm">
-         <obj_property name="ElementShortName">.i_imm[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.i_imm[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.b_imm">
-         <obj_property name="ElementShortName">.b_imm[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.b_imm[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.opcode">
-         <obj_property name="ElementShortName">.opcode[6:0]</obj_property>
-         <obj_property name="ObjectShortName">.opcode[6:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.func3">
-         <obj_property name="ElementShortName">.func3[2:0]</obj_property>
-         <obj_property name="ObjectShortName">.func3[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.mem">
-         <obj_property name="ElementShortName">.mem</obj_property>
-         <obj_property name="ObjectShortName">.mem</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/result.wb">
-         <obj_property name="ElementShortName">.wb</obj_property>
-         <obj_property name="ObjectShortName">.wb</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="divider48" type="divider">
       <obj_property name="label">ID/EX</obj_property>
@@ -216,6 +171,26 @@
       <wvobject type="logic" fp_name="/PipelineTest/my_otter/ex_stage/reset">
          <obj_property name="ElementShortName">reset</obj_property>
          <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ex_stage/alu_a">
+         <obj_property name="ElementShortName">alu_a[31:0]</obj_property>
+         <obj_property name="ObjectShortName">alu_a[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ex_stage/fu_a/fwd">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">fwd[1:0]</obj_property>
+         <obj_property name="ObjectShortName">fwd[1:0]</obj_property>
+         <obj_property name="label">a_fwd</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ex_stage/alu_b">
+         <obj_property name="ElementShortName">alu_b[31:0]</obj_property>
+         <obj_property name="ObjectShortName">alu_b[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ex_stage/fu_b/fwd">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">fwd[1:0]</obj_property>
+         <obj_property name="ObjectShortName">fwd[1:0]</obj_property>
+         <obj_property name="label">b_fwd</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ex_stage/result">
          <obj_property name="ElementShortName">result</obj_property>

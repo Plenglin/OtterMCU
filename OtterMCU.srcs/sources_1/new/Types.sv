@@ -85,7 +85,7 @@ typedef struct packed {
 
 typedef struct packed {
     logic rf_wr_en;
-    logic [1:0] rf_wr_sel;
+    regwr_t rf_wr_sel;
     logic [4:0] wa;
 } st_WB_t;
 

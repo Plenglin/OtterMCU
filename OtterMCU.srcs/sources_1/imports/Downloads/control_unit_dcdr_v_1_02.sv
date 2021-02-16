@@ -10,7 +10,7 @@ module CU_DCDR(
     output alufun_t alu_fun,
     output alusrcA_t alu_srcA,
     output alusrcB_t alu_srcB, 
-    output logic [1:0] rf_wr_sel,
+    output regwr_t rf_wr_sel,
     output logic rf_wr_en,
     
     output logic mem_write,
@@ -52,7 +52,7 @@ module CU_DCDR(
        
     always_comb begin 
         //- schedule all values to avoid latch
-        rf_wr_sel = 2'd0;  // pc_inc 
+        rf_wr_sel = regwr_PCNEXT;
         rf_wr_en = 0;
         
         alu_srcA = alusrc_a_RS1;   
@@ -68,25 +68,25 @@ module CU_DCDR(
                 rf_wr_en = 1;
                 alu_fun = alufun_LUI; 
                 alu_srcA = alusrc_a_UIMM;
-                rf_wr_sel = 2'b11;   // alu_result
+                rf_wr_sel = regwr_ALU;
             end
             
             AUIPC: begin
                 rf_wr_en = 1;
                 alu_fun = alufun_ADD;
-                alu_srcA = alusrc_a_UIMM;        // u-imm
-                alu_srcB = alusrc_b_PC;     // pc
-                rf_wr_sel = 2'd3;   // alu_result
+                alu_srcA = alusrc_a_UIMM;
+                alu_srcB = alusrc_b_PC;
+                rf_wr_sel = regwr_ALU;
             end
             
             JAL: begin
                 rf_wr_en = 1;
-                rf_wr_sel = 2'd0;   // next pc
+                rf_wr_sel = regwr_PCNEXT;
             end
             
             JALR: begin
                 rf_wr_en = 1;
-                rf_wr_sel = 2'd0;   // next pc
+                rf_wr_sel = regwr_PCNEXT;
             end
             
             BRANCH: begin
@@ -95,46 +95,46 @@ module CU_DCDR(
             end
             
             LOAD: begin
-                alu_fun = alufun_ADD;     // add
-                alu_srcA = alusrc_a_RS1;          // rs1
-                alu_srcB = alusrc_b_IIMM;       // i imm
-                rf_wr_sel = 2'd2;      // mem dout
+                alu_fun = alufun_ADD;
+                alu_srcA = alusrc_a_RS1;
+                alu_srcB = alusrc_b_IIMM;
+                rf_wr_sel = regwr_MEM;
                 rf_wr_en = 1;
                 mem_read = 1;
             end
             
             STORE: begin
-                alu_fun = alufun_ADD;     // add
-                alu_srcA = alusrc_a_RS1;       // rs1
-                alu_srcB = alusrc_b_SIMM;       // s imm
+                alu_fun = alufun_ADD;
+                alu_srcA = alusrc_a_RS1;
+                alu_srcB = alusrc_b_SIMM;
                 mem_write = 1;
             end
             
             OP_IMM: begin
-                alu_srcA = alusrc_a_RS1;   // rs1
-                alu_srcB = alusrc_b_IIMM;   // i imm
-                rf_wr_sel = 2'd3;  // alu result
-                alu_fun = alufun_t'(op_alu_fun);  // translated func
+                alu_srcA = alusrc_a_RS1;
+                alu_srcB = alusrc_b_IIMM;
+                rf_wr_sel = regwr_ALU;
+                alu_fun = alufun_t'(op_alu_fun);
                 rf_wr_en = 1;
             end
             
             OP_RG3: begin
                 rf_wr_en = 1;
-                alu_srcA = alusrc_a_RS1;   // rs1
-                alu_srcB = alusrc_b_RS2;   // rs2
-                rf_wr_sel = 2'd3;  // alu result
-                alu_fun = alufun_t'(op_alu_fun);  // translated func             
+                alu_srcA = alusrc_a_RS1;
+                alu_srcB = alusrc_b_RS2;
+                rf_wr_sel = regwr_ALU;
+                alu_fun = alufun_t'(op_alu_fun);             
             end
             
-            OP_INT: if (func3[0]) begin  // csrrw
+            OP_INT: if (func3[0]) begin
                 rf_wr_en = 1;
-                rf_wr_sel = 2'd1;  // csr_reg
+                rf_wr_sel = regwr_CSR;
             end
 
             default: begin
                  alu_srcA = alusrc_a_RS1; 
                  alu_srcB = alusrc_b_RS2; 
-                 rf_wr_sel = 2'b00; 
+                 rf_wr_sel = regwr_PCNEXT; 
                  alu_fun = alufun_ADD;
             end
         endcase

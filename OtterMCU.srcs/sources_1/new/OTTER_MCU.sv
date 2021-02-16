@@ -106,7 +106,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         
         .exmem_wa(mem_input.wb.wa),
         .exmem_data(mem_input.alu_result),
-        .exmem_we(mem_input.wb.rf_wr_en),
+        .exmem_we(mem_input.wb.rf_wr_en & mem_input.wb.rf_wr_sel == regwr_ALU),
         
         .memwb_wa(wb_wa),
         .memwb_data(wb_wd),

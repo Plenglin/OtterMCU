@@ -21,7 +21,7 @@ module ForwardingUnit(
     always_comb 
         if (exmem_we & exmem_wa != 0 & idex_adr == exmem_wa) 
             fwd = fwdsrc_EXMEM;
-        else if (memwb_we & memwb_wa != 0 & idex_adr == exmem_wa)
+        else if (memwb_we & memwb_wa != 0 & idex_adr == memwb_wa)
             fwd = fwdsrc_MEMWB;
         else
             fwd = fwdsrc_IDEX;
