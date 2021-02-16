@@ -13,14 +13,14 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 );
     logic [31:0] jalr, branch, jal;
     
-    logic [31:0] if_pc, id_ir, wb_dout;
+    logic [31:0] if_pc, mem_dout1, wb_dout;
     MEMWB_t mem_result;
     EXMEM_t mem_input;
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
         .MEM_RDEN1(1'b1),
         .MEM_ADDR1(if_pc[15:2]),
-        .MEM_DOUT1(id_ir),
+        .MEM_DOUT1(mem_dout1),
         
         .MEM_RDEN2(mem_input.mem.read),
         .MEM_ADDR2(mem_input.alu_result),
@@ -53,11 +53,15 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 
     logic stall, idex_mem_read;
     logic [4:0] idex_wb_wa;
+    logic [31:0] id_ir;
     HazardDetection hazard(
+        .clk(CLK),
         .idex_mem_read(idex_mem_read),
         .idex_wb_wa(idex_wb_wa),
         .ifid_adr1(id_adr1),
         .ifid_adr2(id_adr2),
+        .ir_fetched(mem_dout1),
+        .ir(id_ir),
         .stall(stall)
     );
     
