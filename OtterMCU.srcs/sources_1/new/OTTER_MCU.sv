@@ -51,10 +51,19 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .en(wb_we)
     );
 
+    logic stall, idex_mem_read;
+    logic [4:0] idex_wb_wa;
+    HazardDetection hazard(
+        .idex_mem_read(idex_mem_read),
+        .idex_wb_wa(idex_wb_wa),
+        .ifid_adr1(id_adr1),
+        .ifid_adr2(id_adr2),
+        .stall(stall)
+    );
+    
     //////// IF ////////
     
     pcsrc_t pc_source;
-    logic pc_write = 1;
     assign branch_flush = pc_source != pcsrc_NEXT; 
     IFStage if_stage(
         .clk(CLK),
@@ -63,7 +72,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .jalr(jalr),
         .branch(branch),
         .jal(jal),
-        .pc_write(pc_write),
+        .pc_write(!stall),
         .pc(if_pc)
     );
     
@@ -73,6 +82,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     PipelineRegister #(.SIZE(32)) if_id_reg(
         .clk(CLK),
         .flush(RESET | branch_flush),
+        .hold(stall),
         .in_data(if_pc),
         .out_data(id_pc)
     );
@@ -93,7 +103,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IDEX_t ex_in;
     PipelineRegister #(.SIZE($bits(IDEX_t))) id_ex_reg(
         .clk(CLK),
-        .flush(RESET | branch_flush),
+        .flush(RESET | stall | branch_flush),
         .in_data(id_out),
         .out_data(ex_in)
     );
@@ -103,6 +113,9 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .clk(CLK),
         .reset(RESET),
         .prev(ex_in),
+        
+        .idex_mem_read(idex_mem_read),
+        .idex_wb_wa(idex_wb_wa),
         
         .exmem_wa(mem_input.wb.wa),
         .exmem_data(mem_input.alu_result),

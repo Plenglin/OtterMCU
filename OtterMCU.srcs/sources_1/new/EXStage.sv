@@ -13,12 +13,19 @@ module EXStage(
     input [31:0] memwb_data,
     input memwb_we,
     
+    output idex_mem_read,
+    output [4:0] idex_wb_wa,
+    
     output EXMEM_t result,
     output pcsrc_t pc_source,
     output [31:0] jal,
     output [31:0] jalr,
     output [31:0] branch
 );
+
+    assign idex_mem_read = prev.mem.read;
+    assign idex_wb_wa = prev.wb.wa;
+
     logic [31:0] alu_a;
     ForwardingUnit fu_a(
         .idex_adr(prev.alu_a_adr),
