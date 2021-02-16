@@ -93,8 +93,8 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     always_ff @(posedge MEM_CLK) begin
     
       // save data (WD) to memory (ADDR2)
-      if (weAddrValid == 1) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
-        case({size,byteOffset})
+      if (weAddrValid) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
+        case({MEM_SIZE, byteOffset})
             4'b0000: memory[wordAddr2][7:0]   <= MEM_DIN2[7:0];     // sb at byte offsets
             4'b0001: memory[wordAddr2][15:8]  <= MEM_DIN2[7:0];
             4'b0010: memory[wordAddr2][23:16] <= MEM_DIN2[7:0];
