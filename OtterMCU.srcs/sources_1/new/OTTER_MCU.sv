@@ -14,12 +14,14 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     logic [31:0] jalr, branch, jal;
     
     logic [31:0] if_pc, mem_dout1, wb_dout;
+    assign branch_flush = pc_source != pcsrc_NEXT; 
     MEMWB_t mem_result;
     EXMEM_t mem_input;
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
         .MEM_RDEN1(1'b1),
         .MEM_ADDR1(if_pc[15:2]),
+        .flush_dout1(branch_flush),
         .MEM_DOUT1(mem_dout1),
         
         .MEM_RDEN2(mem_input.mem.read),
@@ -68,7 +70,6 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     //////// IF ////////
     
     pcsrc_t pc_source;
-    assign branch_flush = pc_source != pcsrc_NEXT; 
     IFStage if_stage(
         .clk(CLK),
         .reset(RESET),
