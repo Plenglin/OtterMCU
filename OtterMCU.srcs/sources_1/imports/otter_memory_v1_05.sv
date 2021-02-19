@@ -93,7 +93,7 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     end
     
     // BRAM requires all reads and writes to occur synchronously
-    always_ff @(posedge MEM_CLK) begin
+    always_ff @(negedge MEM_CLK) begin
     
       // save data (WD) to memory (ADDR2)
       if (weAddrValid) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
