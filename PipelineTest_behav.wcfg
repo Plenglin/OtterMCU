@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="200190fs"></ZoomStartTime>
-      <ZoomEndTime time="212051fs"></ZoomEndTime>
-      <Cursor1Time time="206050fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="30100001fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="177"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <NameColumnWidth column_width="199"></NameColumnWidth>
+      <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="21" />
    <wvobject type="logic" fp_name="/PipelineTest/RST">
@@ -96,6 +96,12 @@
          <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
          <obj_property name="CellHeight">100</obj_property>
          <obj_property name="Radix">HEXRADIX</obj_property>
+         <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
+         <obj_property name="AnalogYRangeMin">0.000000</obj_property>
+         <obj_property name="AnalogYRRangeMax">2048.000000</obj_property>
+         <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
+         <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+         <obj_property name="AnalogHorizLine">0.000000</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/if_stage/pc_source">
          <obj_property name="ElementShortName">pc_source[2:0]</obj_property>
@@ -164,17 +170,13 @@
       <obj_property name="label">ID</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="other" fp_name="/PipelineTest/my_otter/id_stage/srcA">
-         <obj_property name="ElementShortName">srcA</obj_property>
-         <obj_property name="ObjectShortName">srcA</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/srcB">
-         <obj_property name="ElementShortName">srcB[1:0]</obj_property>
-         <obj_property name="ObjectShortName">srcB[1:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/ir">
          <obj_property name="ElementShortName">ir[31:0]</obj_property>
          <obj_property name="ObjectShortName">ir[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/PipelineTest/my_otter/id_stage/srcA">
+         <obj_property name="ElementShortName">srcA</obj_property>
+         <obj_property name="ObjectShortName">srcA</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/adr1">
          <obj_property name="ElementShortName">adr1[4:0]</obj_property>
@@ -184,6 +186,10 @@
       <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/rs1">
          <obj_property name="ElementShortName">rs1[31:0]</obj_property>
          <obj_property name="ObjectShortName">rs1[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/srcB">
+         <obj_property name="ElementShortName">srcB[1:0]</obj_property>
+         <obj_property name="ObjectShortName">srcB[1:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/id_stage/adr2">
          <obj_property name="ElementShortName">adr2[4:0]</obj_property>
@@ -207,7 +213,7 @@
    <wvobject fp_name="divider48" type="divider">
       <obj_property name="label">ID/EX</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="BkColor">#FFFFFF</obj_property>
+      <obj_property name="BkColor">#FAAFBE</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/PipelineTest/my_otter/id_ex_reg/flush">
       <obj_property name="ElementShortName">flush</obj_property>

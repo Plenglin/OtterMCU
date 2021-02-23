@@ -123,9 +123,8 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
             memReadWord <= memory[wordAddr2];
             sign <= MEM_SIGN;
             size <= MEM_SIZE;
+            readIsIO <= MEM_ADDR2 >= 32'h00010000;
         end
-        
-        readIsIO <= MEM_ADDR2 >= 32'h00010000;
     end
        
     // Change the data word into sized bytes and sign extend 
