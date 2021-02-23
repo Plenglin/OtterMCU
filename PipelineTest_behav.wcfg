@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="36302fs"></ZoomStartTime>
-      <ZoomEndTime time="65753fs"></ZoomEndTime>
-      <Cursor1Time time="41210fs"></Cursor1Time>
+      <ZoomStartTime time="200190fs"></ZoomStartTime>
+      <ZoomEndTime time="212051fs"></ZoomEndTime>
+      <Cursor1Time time="206050fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="177"></NameColumnWidth>
-      <ValueColumnWidth column_width="77"></ValueColumnWidth>
+      <ValueColumnWidth column_width="73"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="21" />
    <wvobject type="logic" fp_name="/PipelineTest/RST">
@@ -95,6 +95,7 @@
          <obj_property name="ObjectShortName">pc[31:0]</obj_property>
          <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
          <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/if_stage/pc_source">
          <obj_property name="ElementShortName">pc_source[2:0]</obj_property>

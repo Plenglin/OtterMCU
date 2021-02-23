@@ -67,6 +67,7 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     logic [31:0] memReadWord, ioBuffer, memReadSized;
     logic [1:0] byteOffset;
     logic weAddrValid;      // active when saving (WE) to valid memory address
+    logic readIsIO;
     
     logic sign;
     logic [1:0] size;
@@ -93,7 +94,7 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     end
     
     // BRAM requires all reads and writes to occur synchronously
-    always_ff @(negedge MEM_CLK) begin
+    always_ff @(posedge MEM_CLK) begin
     
       // save data (WD) to memory (ADDR2)
       if (weAddrValid) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
@@ -123,6 +124,8 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
             sign <= MEM_SIGN;
             size <= MEM_SIZE;
         end
+        
+        readIsIO <= MEM_ADDR2 >= 32'h00010000;
     end
        
     // Change the data word into sized bytes and sign extend 
@@ -154,12 +157,11 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
  
     // Memory Mapped IO 
     always_comb begin
-        if(MEM_ADDR2 >= 32'h00010000) begin  // MMIO address range
+        if (readIsIO) begin  // MMIO address range
             IO_WR = MEM_WE2;                 // IO Write
             MEM_DOUT2 = ioBuffer;            // IO read from buffer
             weAddrValid = 0;                 // address beyond memory range
-        end 
-        else begin
+        end else begin
             IO_WR = 0;                  // not MMIO
             MEM_DOUT2 = memReadSized;   // output sized and sign extended data
             weAddrValid = MEM_WE2;      // address in valid memory range
