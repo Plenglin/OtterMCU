@@ -66,6 +66,7 @@ module IDStage(
     assign result.mem.size = ir[13:12];
     assign result.mem.sign = ir[14];
     assign result.mem.rs2 = rs2; 
+    assign result.mem.rs2_adr = adr2; 
     assign result.i_imm = i_imm;
     assign result.func3 = func3;
     assign result.opcode = opcode;

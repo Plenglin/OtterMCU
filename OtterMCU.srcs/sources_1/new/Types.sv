@@ -80,6 +80,7 @@ typedef struct packed {
     logic read;
     logic sign;
     logic [31:0] rs2;
+    logic [4:0] rs2_adr;
     logic [1:0] size;
 } st_MEM_t;
 

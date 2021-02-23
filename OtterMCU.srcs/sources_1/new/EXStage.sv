@@ -84,7 +84,25 @@ module EXStage(
         .branch(branch)
     );
     
+    // Forwarding for store instructions
+    logic [31:0] mem_rs2;
+    ForwardingUnit fu_mem_rs2(
+        .idex_adr(prev.mem.rs2_adr),
+        .idex_data(prev.mem.rs2),
+        
+        .exmem_wa(exmem_wa),
+        .exmem_data(exmem_data),
+        .exmem_we(exmem_we),
+        
+        .memwb_wa(memwb_wa),
+        .memwb_data(memwb_data),
+        .memwb_we(memwb_we),
+        
+        .alu_arg(mem_rs2)
+    );
+    
     assign result.pc = prev.pc;
     assign result.mem = prev.mem;
+    assign result.mem.rs2 = mem_rs2;
     assign result.wb = prev.wb;
 endmodule

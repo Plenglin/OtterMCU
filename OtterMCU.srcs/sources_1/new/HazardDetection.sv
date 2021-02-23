@@ -11,7 +11,7 @@ module HazardDetection(
     output stall
     );
     
-    assign stall = idex_mem_read & (
+    assign stall = idex_mem_read & idex_wb_wa != 0 & (
         idex_wb_wa == ifid_adr1 | idex_wb_wa == ifid_adr2
     );
     
