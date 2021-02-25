@@ -54,7 +54,10 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     input [31:0] MEM_DIN2,  // Data to save
     input [1:0] MEM_SIZE,   // 0-Byte, 1-Half, 2-Word
     input MEM_SIGN,         // 1-unsigned 0-signed
-    input [31:0] IO_IN,     // Data from IO     
+    input [31:0] IO_IN,     // Data from IO
+    
+    input logic flush_dout1,
+    
     //output ERR,
     output logic IO_WR,     // IO 1-write 0-read
     output logic [31:0] MEM_DOUT1,  // Instruction
@@ -64,6 +67,7 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     logic [31:0] memReadWord, ioBuffer, memReadSized;
     logic [1:0] byteOffset;
     logic weAddrValid;      // active when saving (WE) to valid memory address
+    logic readIsIO;
     
     logic sign;
     logic [1:0] size;
@@ -93,8 +97,8 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     always_ff @(posedge MEM_CLK) begin
     
       // save data (WD) to memory (ADDR2)
-      if (weAddrValid == 1) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
-        case({size,byteOffset})
+      if (weAddrValid) begin  //(MEM_WE == 1) && (MEM_ADDR2 < 16'hFFFD)) begin   // write enable and valid address space
+        case({MEM_SIZE, byteOffset})
             4'b0000: memory[wordAddr2][7:0]   <= MEM_DIN2[7:0];     // sb at byte offsets
             4'b0001: memory[wordAddr2][15:8]  <= MEM_DIN2[7:0];
             4'b0010: memory[wordAddr2][23:16] <= MEM_DIN2[7:0];
@@ -110,13 +114,16 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
       end
 
         // read all data synchronously required for BRAM
-        if(MEM_RDEN1)                       // need EN for extra load cycle to not change instruction
+        if (flush_dout1)
+            MEM_DOUT1 <= 0;
+        else if (MEM_RDEN1)                       // need EN for extra load cycle to not change instruction
             MEM_DOUT1 <= memory[MEM_ADDR1];
 
         if(MEM_RDEN2) begin                        // Read word from memory
             memReadWord <= memory[wordAddr2];
             sign <= MEM_SIGN;
             size <= MEM_SIZE;
+            readIsIO <= MEM_ADDR2 >= 32'h00010000;
         end
     end
        
@@ -149,12 +156,11 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
  
     // Memory Mapped IO 
     always_comb begin
-        if(MEM_ADDR2 >= 32'h00010000) begin  // MMIO address range
+        if (readIsIO) begin  // MMIO address range
             IO_WR = MEM_WE2;                 // IO Write
             MEM_DOUT2 = ioBuffer;            // IO read from buffer
             weAddrValid = 0;                 // address beyond memory range
-        end 
-        else begin
+        end else begin
             IO_WR = 0;                  // not MMIO
             MEM_DOUT2 = memReadSized;   // output sized and sign extended data
             weAddrValid = MEM_WE2;      // address in valid memory range

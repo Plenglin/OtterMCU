@@ -73,13 +73,13 @@ module OTTER_Wrapper(
 
    //- Instantiate RISC-V OTTER MCU 
    OTTER_MCU  my_otter(
-      .RST         (s_reset),
-      .intr        (s_tc_intr),
-      .clk         (s_clk),
-      .iobus_in    (IOBUS_in),
-      .iobus_out   (IOBUS_out), 
-      .iobus_addr  (IOBUS_addr), 
-      .iobus_wr    (IOBUS_wr)   );
+      .RESET(s_reset),
+      .INTR(s_tc_intr),
+      .CLK(s_clk),
+      .IOBUS_IN(IOBUS_in),
+      .IOBUS_OUT(IOBUS_out), 
+      .IOBUS_ADDR(IOBUS_addr), 
+      .IOBUS_WR(IOBUS_wr)   );
    
   timer_counter #(.n(3))  my_tc (
      .clk        (s_clk), 

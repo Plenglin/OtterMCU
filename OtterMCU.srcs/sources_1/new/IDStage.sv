@@ -51,6 +51,7 @@ module IDStage(
         alusrc_a_RS1: result.alu_a = rs1;
         alusrc_a_UIMM: result.alu_a = u_imm;
     endcase
+    assign result.alu_a_adr = (srcA == alusrc_a_RS1) ? adr1 : 0;
         
     always_comb case(srcB)
         alusrc_b_RS2: result.alu_b = rs2;
@@ -58,12 +59,14 @@ module IDStage(
         alusrc_b_SIMM: result.alu_b = s_imm;
         alusrc_b_PC: result.alu_b = pc;
     endcase
+    assign result.alu_b_adr = (srcB == alusrc_b_RS2) ? adr2 : 0;
     
     assign result.pc = pc;
     
     assign result.mem.size = ir[13:12];
     assign result.mem.sign = ir[14];
     assign result.mem.rs2 = rs2; 
+    assign result.mem.rs2_adr = adr2; 
     assign result.i_imm = i_imm;
     assign result.func3 = func3;
     assign result.opcode = opcode;

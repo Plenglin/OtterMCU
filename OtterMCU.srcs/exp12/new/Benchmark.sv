@@ -10,13 +10,13 @@ module Benchmark();
     wire iobus_wr; 
 
     OTTER_MCU #(.MEM_FILE("test_all.mem"))  my_otter(
-     .RST         (RST),
-     .intr        (intr),
-     .clk         (clk),
-     .iobus_in    (iobus_in),
-     .iobus_out   (iobus_out), 
-     .iobus_addr  (iobus_addr), 
-     .iobus_wr    (iobus_wr)
+     .RESET         (RST),
+     .INTR        (intr),
+     .CLK         (clk),
+     .IOBUS_IN    (iobus_in),
+     .IOBUS_OUT   (iobus_out), 
+     .IOBUS_ADDR  (iobus_addr), 
+     .IOBUS_WR    (iobus_wr)
     );
      
     //- Generate periodic clock signal    
@@ -32,7 +32,7 @@ module Benchmark();
         intr=0;
         iobus_in = 32'h0;
     
-        #40
+        #8
 
         RST = 0;
         start = $time;
