@@ -123,4 +123,21 @@ typedef struct packed {
     st_WB_t wb;
 } MEMWB_t;
 
+// Bits: <is branch> <should jump>
+typedef enum logic [1:0] {
+    predict_none = 2'b00,
+    predict_jump = 2'b01,
+    predict_nobr = 2'b10,
+    predict_br = 2'b11
+} br_predict_t;
+
+// Bits: <is branch> <was correct> <should have jumped>
+typedef enum logic [2:0] {
+    confirm_nobr = 3'b110,
+    confirm_br = 3'b111,
+    rollback_br = 3'b100,
+    rollback_nobr = 3'b101,
+    ex_normal = 3'b000
+} br_certain_t;
+
 endpackage

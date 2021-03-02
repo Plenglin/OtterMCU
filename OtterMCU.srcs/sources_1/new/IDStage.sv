@@ -7,9 +7,13 @@ module IDStage(
     output [4:0] adr2,
     input [31:0] rs1,
     input [31:0] rs2,
-    output IDEX_t result
-);
-
+    output IDEX_t result,
+    output pcsrc_t pc_source,
+    
+    output [31:0] jal,
+    output [31:0] jalr,
+    output [31:0] branch);
+    
     opcode_t opcode;
     assign opcode = opcode_t'(ir[6:0]);
     func3_t func3;
