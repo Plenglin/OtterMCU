@@ -68,15 +68,22 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .stall(stall)
     );
     
+    logic [31:0] id_target, ex_pc, ex_target, pc_d;
+    logic flush_ifid, flush_idex;
+    br_predict_t id_branch_status;
+    br_certain_t ex_branch_status;
+    
+    IBranchControlUnit ibcu;
+    BranchControlUnit bcu(.iface(ibcu.BCU));
+    BranchPredictor ibpred;
+    
     //////// IF ////////
     
     IFStage if_stage(
         .clk(CLK),
         .reset(RESET),
         .pc_source(pc_source),
-        .jalr(jalr),
-        .branch(branch),
-        .jal(jal),
+        .bcu(ibcu.IF),
         .pc_write(!stall),
         .pc(if_pc)
     );
@@ -100,6 +107,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .adr2(id_adr2),
         .rs1(id_rs1),
         .rs2(id_rs2),
+        .bcu(ibcu.ID),
+        .predictor(ibpred.ID),
         .result(id_out)
     );
 
@@ -130,10 +139,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
         .memwb_data(wb_wd),
         .memwb_we(wb_we),
         
-        .pc_source(pc_source),
-        .jal(jal),
-        .branch(branch),
-        .jalr(jalr),
+        .bcu(ibcu.EX),
+        .predictor(ibpred.EX),
         .result(ex_out)
     );
     

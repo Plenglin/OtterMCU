@@ -13,14 +13,13 @@ module EXStage(
     input [31:0] memwb_data,
     input memwb_we,
     
+    BranchPredictor.EX predictor,
+    IBranchControlUnit.EX bcu,
+    
     output idex_mem_read,
     output [4:0] idex_wb_wa,
     
-    output EXMEM_t result,
-    output pcsrc_t pc_source,
-    output [31:0] jal,
-    output [31:0] jalr,
-    output [31:0] branch
+    output EXMEM_t result
 );
 
     assign idex_mem_read = prev.mem.read;
@@ -65,23 +64,36 @@ module EXStage(
         .result(result.alu_result)
     );
     
+    logic should_branch;
     BranchCondGen bcg(
         .rs1(alu_a),
         .rs2(alu_b),
         .opcode(prev.opcode),
         .func3(prev.func3),
-        .pcSource(pc_source)
+        .should_branch(should_branch)
     );
+    
+    always_comb case (prev.branch_status) inside
+        predict_none, predict_jump: 
+            bcu.ex_status = ex_normal;
+        predict_br:
+            bcu.ex_status = should_branch ? confirm_br : rollback_br;
+        predict_nobr:
+            bcu.ex_status = should_branch ? rollback_nobr : confirm_br;
+    endcase
+    
+    assign predictor.ex_is_branch = prev.opcode == BRANCH;
+    assign predictor.ex_branch_type = prev.func3;
+    assign predictor.ex_pc = prev.pc;
+    assign bcu.ex_pc = prev.pc;
 
     BranchAddrGen bag(
         .pc(prev.pc),
-        .rs(alu_a),
+        .rs1(alu_a),
         .b_type_imm(prev.b_imm),
         .i_type_imm(prev.i_imm),
         .j_type_imm(prev.j_imm),
-        .jal(jal),
-        .jalr(jalr),
-        .branch(branch)
+        .target(bcu.jump_target)
     );
     
     // Forwarding for store instructions

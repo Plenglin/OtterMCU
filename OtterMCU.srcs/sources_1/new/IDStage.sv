@@ -7,12 +7,12 @@ module IDStage(
     output [4:0] adr2,
     input [31:0] rs1,
     input [31:0] rs2,
-    output IDEX_t result,
-    output pcsrc_t pc_source,
     
-    output [31:0] jal,
-    output [31:0] jalr,
-    output [31:0] branch);
+    BranchPredictor.ID predictor,
+    IBranchControlUnit.ID bcu,
+    
+    output IDEX_t result
+);
     
     opcode_t opcode;
     assign opcode = opcode_t'(ir[6:0]);
@@ -47,7 +47,20 @@ module IDStage(
         .u_type_imm(u_imm),
         .s_type_imm(s_imm)
     );
-        
+    
+    assign predictor.id_is_branch = opcode == BRANCH;
+    assign predictor.id_branch_type = func3;
+    assign predictor.id_pc = pc;
+
+    BranchAddrGen bag(
+        .pc(prev.pc),
+        .rs1(alu_a),
+        .b_type_imm(b_imm),
+        .i_type_imm(i_imm),
+        .j_type_imm(j_imm),
+        .target(bcu.id_target)
+    );
+    
     assign adr1 = ir[19:15];
     assign adr2 = ir[24:20];
     
