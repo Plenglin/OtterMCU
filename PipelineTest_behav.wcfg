@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="58267fs"></ZoomStartTime>
-      <ZoomEndTime time="194668fs"></ZoomEndTime>
-      <Cursor1Time time="90000fs"></Cursor1Time>
+      <ZoomStartTime time="260800fs"></ZoomStartTime>
+      <ZoomEndTime time="527201fs"></ZoomEndTime>
+      <Cursor1Time time="375800fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="199"></NameColumnWidth>
-      <ValueColumnWidth column_width="76"></ValueColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="22" />
    <wvobject type="logic" fp_name="/PipelineTest/RST">
@@ -84,37 +84,11 @@
          <obj_property name="ElementShortName">pc_source[1:0]</obj_property>
          <obj_property name="ObjectShortName">pc_source[1:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/PipelineTest/my_otter/bcu/ex_is_branch">
-         <obj_property name="ElementShortName">ex_is_branch</obj_property>
-         <obj_property name="ObjectShortName">ex_is_branch</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/PipelineTest/my_otter/bcu/ex_correct">
-         <obj_property name="ElementShortName">ex_correct</obj_property>
-         <obj_property name="ObjectShortName">ex_correct</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/PipelineTest/my_otter/bcu/ex_certain_br">
-         <obj_property name="ElementShortName">ex_certain_br</obj_property>
-         <obj_property name="ObjectShortName">ex_certain_br</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/PipelineTest/my_otter/bcu/id_is_branch">
-         <obj_property name="ElementShortName">id_is_branch</obj_property>
-         <obj_property name="ObjectShortName">id_is_branch</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/PipelineTest/my_otter/bcu/id_predict_br">
-         <obj_property name="ElementShortName">id_predict_br</obj_property>
-         <obj_property name="ObjectShortName">id_predict_br</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/if_pc">
-         <obj_property name="ElementShortName">if_pc[31:0]</obj_property>
-         <obj_property name="ObjectShortName">if_pc[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/if_pc_d">
-         <obj_property name="ElementShortName">if_pc_d[31:0]</obj_property>
-         <obj_property name="ObjectShortName">if_pc_d[31:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/id_status">
          <obj_property name="ElementShortName">id_status[1:0]</obj_property>
          <obj_property name="ObjectShortName">id_status[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/id_target">
          <obj_property name="ElementShortName">id_target[31:0]</obj_property>
@@ -123,14 +97,24 @@
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_status">
          <obj_property name="ElementShortName">ex_status[2:0]</obj_property>
          <obj_property name="ObjectShortName">ex_status[2:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_target">
+         <obj_property name="ElementShortName">ex_target[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ex_target[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_pc">
          <obj_property name="ElementShortName">ex_pc[31:0]</obj_property>
          <obj_property name="ObjectShortName">ex_pc[31:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_target">
-         <obj_property name="ElementShortName">ex_target[31:0]</obj_property>
-         <obj_property name="ObjectShortName">ex_target[31:0]</obj_property>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/if_pc">
+         <obj_property name="ElementShortName">if_pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">if_pc[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/if_pc_d">
+         <obj_property name="ElementShortName">if_pc_d[31:0]</obj_property>
+         <obj_property name="ObjectShortName">if_pc_d[31:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/PipelineTest/my_otter/ibcu/flush_ifid">
          <obj_property name="ElementShortName">flush_ifid</obj_property>

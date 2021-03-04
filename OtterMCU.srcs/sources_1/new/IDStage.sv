@@ -63,7 +63,7 @@ module IDStage(
             bcu.id_status = predictor.should_branch ? predict_br : predict_nobr;
         default:
             bcu.id_status = predict_none;
-    endcase
+    endcase 
     
     logic [31:0] jump_target;
     BranchAddrGen bag(
@@ -101,6 +101,7 @@ module IDStage(
     assign result.mem.rs2 = rs2; 
     assign result.mem.rs2_adr = adr2; 
     
+    assign result.branch_status = bcu.id_status;
     assign result.i_imm = i_imm;
     assign result.jump_target = jump_target;
     assign result.func3 = func3;

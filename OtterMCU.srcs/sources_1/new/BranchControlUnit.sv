@@ -6,6 +6,7 @@ module BranchControlUnit(
     IBranchControlUnit.BCU iface
     );
     
+    logic ex_is_branch, ex_correct, ex_certain_br, id_is_branch, id_predict_br;
     assign ex_is_branch = iface.ex_status[2];
     assign ex_correct = iface.ex_status[1];
     assign ex_certain_br = iface.ex_status[0];
@@ -26,7 +27,7 @@ module BranchControlUnit(
         iface.flush_idex = 0;
         pc_source = src_next;
         
-        if (ex_correct) begin  // we were correct
+        if (ex_certain_br) begin  // we should have branched
             if (iface.ex_status == confirm_br) begin  // confirming a branch
                 pc_source = src_next;
                 iface.flush_idex = 1;
@@ -35,8 +36,8 @@ module BranchControlUnit(
                 iface.flush_ifid = 1;
                 iface.flush_idex = 1;
             end 
-        end else begin  // we were not correct
-            if (id_predict_br) begin  // predicting a branch
+        end else begin  // we should not have branched
+            if (id_predict_br) begin  // predicting a new branch
                 pc_source = src_id_target;
                 if (iface.id_status == predict_jump) begin
                     iface.flush_ifid = 1;
