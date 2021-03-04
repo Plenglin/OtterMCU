@@ -83,16 +83,9 @@ module EXStage(
     endcase
     assign predictor.ex_branch_type = prev.func3;
     assign predictor.ex_pc = prev.pc;
+    
     assign bcu.ex_pc = prev.pc;
-
-    BranchAddrGen bag(
-        .pc(prev.pc),
-        .rs1(alu_a),
-        .b_type_imm(prev.b_imm),
-        .i_type_imm(prev.i_imm),
-        .j_type_imm(prev.j_imm),
-        .target(bcu.ex_target)
-    );
+    assign bcu.ex_target = prev.jump_target; 
     
     // Forwarding for store instructions
     logic [31:0] mem_rs2;

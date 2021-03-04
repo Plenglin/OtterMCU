@@ -118,9 +118,8 @@ typedef struct packed {
     logic [4:0] alu_b_adr;
     logic [31:0] alu_a;
     logic [31:0] alu_b;
-    logic [31:0] j_imm;
+    logic [31:0] jump_target;
     logic [31:0] i_imm;
-    logic [31:0] b_imm;
     br_predict_t branch_status;
     opcode_t opcode;
     func3_t func3;

@@ -38,12 +38,12 @@ module IDStage(
         .mem_write(result.mem.write)
     );
 
-    logic [31:0] i_imm, u_imm, s_imm;
+    logic [31:0] j_imm, b_imm, i_imm, u_imm, s_imm;
     ImmedGen imm_gen(
         .ir(ir[31:7]),
-        .j_type_imm(result.j_imm),
+        .j_type_imm(j_imm),
         .i_type_imm(i_imm),
-        .b_type_imm(result.b_imm),
+        .b_type_imm(b_imm),
         .u_type_imm(u_imm),
         .s_type_imm(s_imm)
     );
@@ -65,14 +65,17 @@ module IDStage(
             bcu.id_status = predict_none;
     endcase
     
+    logic [31:0] jump_target;
     BranchAddrGen bag(
         .pc(pc),
-        .rs1(alu_a),
+        .rs1(rs1),
+        .opcode(opcode),
         .b_type_imm(b_imm),
         .i_type_imm(i_imm),
         .j_type_imm(j_imm),
-        .target(bcu.id_target)
+        .target(jump_target)
     );
+    assign bcu.id_target = jump_target;
     
     assign adr1 = ir[19:15];
     assign adr2 = ir[24:20];
@@ -97,7 +100,9 @@ module IDStage(
     assign result.mem.sign = ir[14];
     assign result.mem.rs2 = rs2; 
     assign result.mem.rs2_adr = adr2; 
+    
     assign result.i_imm = i_imm;
+    assign result.jump_target = jump_target;
     assign result.func3 = func3;
     assign result.opcode = opcode;
     assign result.wb.wa = ir[11:7];
