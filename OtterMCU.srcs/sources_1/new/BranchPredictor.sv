@@ -15,6 +15,9 @@ interface BranchPredictor(
     logic should_branch;
 
     modport Predictor(
+        input clk,
+        input reset,
+        
         input id_is_branch,
         input id_branch_type,
         input id_pc,
