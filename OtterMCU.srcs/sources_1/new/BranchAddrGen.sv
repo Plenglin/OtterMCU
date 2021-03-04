@@ -18,7 +18,7 @@ module BranchAddrGen(
         JALR:
             target = rs1 + i_type_imm;
         default:
-            target = 32'hZZZZZZZZ;
+            target = 32'hdeadbeef;
     endcase
     
 endmodule

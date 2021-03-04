@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="260800fs"></ZoomStartTime>
-      <ZoomEndTime time="527201fs"></ZoomEndTime>
-      <Cursor1Time time="375800fs"></Cursor1Time>
+      <ZoomStartTime time="6173600fs"></ZoomStartTime>
+      <ZoomEndTime time="6440801fs"></ZoomEndTime>
+      <Cursor1Time time="6273000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="199"></NameColumnWidth>
-      <ValueColumnWidth column_width="72"></ValueColumnWidth>
+      <ValueColumnWidth column_width="68"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="22" />
    <wvobject type="logic" fp_name="/PipelineTest/RST">
@@ -80,33 +80,37 @@
       <obj_property name="label">IBCU</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/bcu/pc_source">
-         <obj_property name="ElementShortName">pc_source[1:0]</obj_property>
-         <obj_property name="ObjectShortName">pc_source[1:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/id_status">
          <obj_property name="ElementShortName">id_status[1:0]</obj_property>
          <obj_property name="ObjectShortName">id_status[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/id_target">
          <obj_property name="ElementShortName">id_target[31:0]</obj_property>
          <obj_property name="ObjectShortName">id_target[31:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_status">
          <obj_property name="ElementShortName">ex_status[2:0]</obj_property>
          <obj_property name="ObjectShortName">ex_status[2:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FFA500</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_pc">
+         <obj_property name="ElementShortName">ex_pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ex_pc[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_target">
          <obj_property name="ElementShortName">ex_target[31:0]</obj_property>
          <obj_property name="ObjectShortName">ex_target[31:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/ex_pc">
-         <obj_property name="ElementShortName">ex_pc[31:0]</obj_property>
-         <obj_property name="ObjectShortName">ex_pc[31:0]</obj_property>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/bcu/pc_source">
+         <obj_property name="ElementShortName">pc_source[1:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_source[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibcu/if_pc">
          <obj_property name="ElementShortName">if_pc[31:0]</obj_property>
