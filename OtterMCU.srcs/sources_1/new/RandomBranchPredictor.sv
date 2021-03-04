@@ -1,7 +1,7 @@
 module RandomBranchPredictor(
         BranchPredictor.Predictor bp
     );
-    logic [7:0] counter = 0;
+    logic [7:0] counter = 1;
     logic [7:0] next;
     assign bp.should_branch = counter[0];
     

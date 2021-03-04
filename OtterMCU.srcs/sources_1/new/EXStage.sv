@@ -79,7 +79,7 @@ module EXStage(
         predict_br:
             bcu.ex_status = should_branch ? confirm_br : rollback_br;
         predict_nobr:
-            bcu.ex_status = should_branch ? rollback_nobr : confirm_br;
+            bcu.ex_status = should_branch ? rollback_nobr : confirm_nobr;
     endcase
     assign predictor.ex_branched = should_branch;
     assign predictor.ex_branch_type = prev.func3;
