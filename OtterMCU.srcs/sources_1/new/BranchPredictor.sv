@@ -38,4 +38,4 @@ interface BranchPredictor(
         output ex_branch_type,
         output ex_pc
     );
-endinterface
+endinterface 

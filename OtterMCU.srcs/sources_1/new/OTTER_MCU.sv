@@ -73,9 +73,9 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     br_predict_t id_branch_status;
     br_certain_t ex_branch_status;
     
-    IBranchControlUnit ibcu;
+    IBranchControlUnit ibcu();
     BranchControlUnit bcu(.iface(ibcu.BCU));
-    BranchPredictor ibpred;
+    BranchPredictor ibpred();
     
     //////// IF ////////
     
