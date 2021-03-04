@@ -26,7 +26,7 @@ module BranchControlUnit(
         iface.flush_idex = 0;
         pc_source = src_next;
         
-        if (iface.ex_correct) begin  // we were correct
+        if (ex_correct) begin  // we were correct
             if (iface.ex_status == confirm_br) begin
                 pc_source = src_next;
                 iface.flush_ifid = 0;
@@ -56,12 +56,12 @@ module BranchControlUnit(
     
     always_comb case (pc_source)
         src_next: 
-            iface.pc_d = iface.if_pc + 4;
+            iface.if_pc_d = iface.if_pc + 4;
         src_ex_target: 
-            iface.pc_d = iface.ex_target;
+            iface.if_pc_d = iface.ex_target;
         src_id_target: 
-            iface.pc_d = iface.id_target;
+            iface.if_pc_d = iface.id_target;
         src_ex_subsequent: 
-            iface.pc_d = iface.ex_pc + 8;
+            iface.if_pc_d = iface.ex_pc + 8;
     endcase
 endmodule

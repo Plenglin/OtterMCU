@@ -52,8 +52,9 @@ module IDStage(
     assign predictor.id_branch_type = func3;
     assign predictor.id_pc = pc;
 
+    logic [31:0] jump_target;
     BranchAddrGen bag(
-        .pc(prev.pc),
+        .pc(pc),
         .rs1(alu_a),
         .b_type_imm(b_imm),
         .i_type_imm(i_imm),

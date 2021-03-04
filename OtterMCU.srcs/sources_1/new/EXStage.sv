@@ -81,8 +81,6 @@ module EXStage(
         predict_nobr:
             bcu.ex_status = should_branch ? rollback_nobr : confirm_br;
     endcase
-    
-    assign predictor.ex_is_branch = prev.opcode == BRANCH;
     assign predictor.ex_branch_type = prev.func3;
     assign predictor.ex_pc = prev.pc;
     assign bcu.ex_pc = prev.pc;
@@ -93,7 +91,7 @@ module EXStage(
         .b_type_imm(prev.b_imm),
         .i_type_imm(prev.i_imm),
         .j_type_imm(prev.j_imm),
-        .target(bcu.jump_target)
+        .target(bcu.ex_target)
     );
     
     // Forwarding for store instructions
