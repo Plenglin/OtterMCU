@@ -48,11 +48,23 @@ module IDStage(
         .s_type_imm(s_imm)
     );
     
-    assign predictor.id_is_branch = opcode == BRANCH;
-    assign predictor.id_branch_type = func3;
+    logic is_branch;
+    assign is_branch = opcode == BRANCH;
+    assign is_jump = opcode == JAL | opcode == JALR;
+    
+    assign predictor.id_is_branch = is_branch;
+    assign predictor.id_branch_type = func3;  
     assign predictor.id_pc = pc;
-
-    logic [31:0] jump_target;
+    
+    always_comb case (opcode) inside
+        JAL, JALR:
+            bcu.id_status = predict_jump;
+        BRANCH:
+            bcu.id_status = predictor.should_branch ? predict_br : predict_nobr;
+        default:
+            bcu.id_status = predict_none;
+    endcase
+    
     BranchAddrGen bag(
         .pc(pc),
         .rs1(alu_a),

@@ -27,29 +27,28 @@ module BranchControlUnit(
         pc_source = src_next;
         
         if (ex_correct) begin  // we were correct
-            if (iface.ex_status == confirm_br) begin
+            if (iface.ex_status == confirm_br) begin  // confirming a branch
                 pc_source = src_next;
-                iface.flush_ifid = 0;
                 iface.flush_idex = 1;
-            end else if (iface.ex_status == rollback_nobr) begin
+            end else if (iface.ex_status == rollback_nobr) begin  // rolling back a mispredicted branch
                 pc_source = src_ex_target;
                 iface.flush_ifid = 1;
                 iface.flush_idex = 1;
             end 
         end else begin  // we were not correct
-            if (id_predict_br) begin
-                if (iface.ex_status == rollback_br) begin
-                    iface.flush_ifid = 1;
-                    pc_source = src_ex_subsequent; 
-                end else
-                    pc_source = src_next;
-            end else begin 
+            if (id_predict_br) begin  // predicting a branch
                 pc_source = src_id_target;
                 if (iface.id_status == predict_jump) begin
                     iface.flush_ifid = 1;
                     iface.flush_idex = 1;
                 end else if (iface.ex_status == rollback_br)
                     iface.flush_ifid = 1;
+            end else begin  // predict no branch
+                if (iface.ex_status == rollback_br) begin
+                    iface.flush_ifid = 1;
+                    pc_source = src_ex_subsequent; 
+                end else
+                    pc_source = src_next;
             end
         end
     end

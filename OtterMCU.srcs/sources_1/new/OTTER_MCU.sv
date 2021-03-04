@@ -14,15 +14,14 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     logic [31:0] jalr, branch, jal;
     
     logic [31:0] if_pc, mem_dout1, wb_dout;
-    pcsrc_t pc_source;
-    assign branch_flush = pc_source != pcsrc_NEXT; 
+    logic flush_ifid, flush_idex;
     MEMWB_t mem_result;
     EXMEM_t mem_input;
     Memory #(.MEM_FILE(MEM_FILE)) mem(
         .MEM_CLK(CLK),
         .MEM_RDEN1(1'b1),
         .MEM_ADDR1(if_pc[15:2]),
-        .flush_dout1(branch_flush),
+        .flush_dout1(flush_ifid),
         .MEM_DOUT1(mem_dout1),
         
         .MEM_RDEN2(mem_input.mem.read),
@@ -69,11 +68,12 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     );
     
     logic [31:0] id_target, ex_pc, ex_target, pc_d;
-    logic flush_ifid, flush_idex;
     br_predict_t id_branch_status;
     br_certain_t ex_branch_status;
     
     IBranchControlUnit ibcu();
+    assign flush_ifid = ibcu.flush_ifid;
+    assign flush_idex = ibcu.flush_idex;
     BranchControlUnit bcu(.iface(ibcu.BCU));
     BranchPredictor ibpred(
         .clk(clk),
@@ -86,7 +86,6 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IFStage if_stage(
         .clk(CLK),
         .reset(RESET),
-        .pc_source(pc_source),
         .bcu(ibcu.IF),
         .pc_write(!stall),
         .pc(if_pc)
@@ -97,7 +96,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     logic [31:0] id_pc;
     PipelineRegister #(.SIZE(32)) if_id_reg(
         .clk(CLK),
-        .flush(RESET | branch_flush),
+        .flush(RESET | flush_ifid),
         .hold(stall),
         .in_data(if_pc),
         .out_data(id_pc)
@@ -121,7 +120,7 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IDEX_t ex_in;
     PipelineRegister #(.SIZE($bits(IDEX_t))) id_ex_reg(
         .clk(CLK),
-        .flush(RESET | stall | branch_flush),
+        .flush(RESET | stall | flush_idex),
         .in_data(id_out),
         .out_data(ex_in)
     );

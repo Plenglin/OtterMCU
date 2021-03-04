@@ -3,7 +3,6 @@ import Types::*;
 module IFStage(
     input clk,
     input reset,
-    input pcsrc_t pc_source,
     input pc_write,
     
     IBranchControlUnit.IF bcu,

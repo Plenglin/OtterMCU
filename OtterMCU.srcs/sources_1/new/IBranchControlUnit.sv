@@ -2,7 +2,7 @@
 
 import Types::*;
 
-interface IBranchControlUnit;
+interface IBranchControlUnit();
     logic [31:0] if_pc;
     logic [31:0] if_pc_d;
 
@@ -13,8 +13,7 @@ interface IBranchControlUnit;
     logic [31:0] ex_pc;
     logic [31:0] ex_target;
     
-    logic flush_ifid;
-    logic flush_idex;
+    logic flush_ifid, flush_idex;
     
     modport BCU(
         input if_pc,
