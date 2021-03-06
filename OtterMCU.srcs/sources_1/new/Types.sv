@@ -140,4 +140,12 @@ typedef struct packed {
     st_WB_t wb;
 } MEMWB_t;
 
+typedef struct packed {
+    logic [31:0] 
+        correct_br, 
+        correct_nobr, 
+        wrong_br, 
+        wrong_nobr;
+} branch_perf;
+
 endpackage

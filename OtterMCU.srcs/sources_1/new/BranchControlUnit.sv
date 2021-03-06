@@ -3,17 +3,19 @@
 import Types::*;
 
 module BranchControlUnit(
-    IBranchControlUnit.BCU iface
+    IBranchControlUnit.BCU iface,
+    input clk,
+    input reset,
+    output branch_perf perf
     );
     
-    logic ex_is_branch, ex_correct, ex_certain_br, id_is_branch, id_predict_br;
     assign ex_is_branch = iface.ex_status[2];
     assign ex_correct = iface.ex_status[1];
     assign ex_certain_br = iface.ex_status[0];
     
     assign id_is_branch = iface.id_status[1];
     assign id_predict_br = iface.id_status[0];
-    
+        
     typedef enum logic [1:0] {
         src_next = 0,
         src_ex_target = 1,
@@ -41,6 +43,7 @@ module BranchControlUnit(
                 pc_source = src_id_target;
                 if (iface.id_status == predict_jump) begin
                     iface.flush_ifid = 1;
+                    iface.flush_idex = 1;
                 end else if (iface.ex_status == rollback_br)
                     iface.flush_ifid = 1;
             end else begin  // predict no branch
@@ -63,4 +66,19 @@ module BranchControlUnit(
         src_ex_subsequent: 
             iface.if_pc_d = iface.ex_pc + 8;
     endcase
+    
+    always_ff @(posedge clk) begin
+        if (reset) 
+            perf = 0;
+        else case (iface.ex_status)
+            confirm_br: 
+                perf.correct_br += 1;
+            confirm_nobr: 
+                perf.correct_nobr += 1;
+            rollback_br: 
+                perf.wrong_br += 1;
+            rollback_nobr: 
+                perf.wrong_nobr += 1;
+        endcase
+    end
 endmodule
