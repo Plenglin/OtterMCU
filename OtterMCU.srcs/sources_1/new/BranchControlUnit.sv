@@ -43,7 +43,6 @@ module BranchControlUnit(
                 pc_source = src_id_target;
                 if (iface.id_status == predict_jump) begin
                     iface.flush_ifid = 1;
-                    iface.flush_idex = 1;
                 end else if (iface.ex_status == rollback_br)
                     iface.flush_ifid = 1;
             end else begin  // predict no branch
