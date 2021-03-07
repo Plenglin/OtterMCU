@@ -11,7 +11,6 @@ module BranchBench;
     
     logic reset, iobus_wr;
     logic [31:0] iobus_out, iobus_addr;
-    BranchPredictor predictor();
     OTTER_MCU mcu(
         .RESET       (reset),
         .CLK         (clk),
@@ -39,37 +38,22 @@ module BranchBench;
         $display("%s,%s,%s", progname, predictorname, duration);
     end endtask
     
-    string predictors[] = '{
-        "always",
-        "never",
-        "random"
-    };
-    
     string programs[] = '{
         "matmul.mem"
     };
     
-    AlwaysPredictor always_pred();
-    NeverPredictor never_pred();
-    RandomPredictor random_pred();
+    task run_programs(); begin
+        for (int j = 0; j < $size(programs); j++) begin
+            progname = programs[j];
+            mcu.load_memory(progname);
+            run_simulation();
+        end
+    end endtask
     
     initial begin
-        for (int i = 0; i < $size(predictors); i++) begin
-            predictorname = predictors[i];
-            case (predictorname)
-                "random": 
-                    assign predictor.Predictor = random_pred.predictor;
-                "always": 
-                    assign predictor.Predictor = always_pred.predictor;
-                "never": 
-                    assign predictor.Predictor = never_pred.predictor; 
-            endcase
-            
-            for (int j = 0; j < $size(programs); j++) begin
-                progname = programs[i];
-                mcu.load_memory(progname);
-                run_simulation();
-            end
-        end
+        mcu.ibpred = always_ibpred;
+        predictorname = "always";
+        run_programs();
+        
     end
 endmodule
