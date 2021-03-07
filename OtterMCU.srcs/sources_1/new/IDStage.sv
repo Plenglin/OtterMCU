@@ -81,8 +81,6 @@ module IDStage(
     
     assign adr1 = ir[19:15];
     assign adr2 = ir[24:20];
-    logic [4:0] wa;
-    assign wa = ir[11:7];
     
     always_comb case(srcA) 
         alusrc_a_RS1: result.alu_a = rs1;
@@ -110,5 +108,5 @@ module IDStage(
     assign result.jump_target = jump_target;
     assign result.func3 = func3;
     assign result.opcode = opcode;
-    assign result.wb.wa = wa;  // i hate this
+    assign result.wb.wa = ir[11:7];
 endmodule
