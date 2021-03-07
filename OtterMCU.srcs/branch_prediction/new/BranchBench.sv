@@ -53,6 +53,6 @@ module BranchBench;
     initial begin
         predictorname = "always";
         run_programs();
-        
+        $stop();
     end
 endmodule
