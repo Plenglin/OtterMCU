@@ -32,7 +32,7 @@ module BranchBench;
         #4;
         reset = 0;
         
-        while (!done);
+        while (!done) #1;
         
         duration = $time - start; 
         $display("%s,%s,%s", progname, predictorname, duration);
@@ -51,7 +51,6 @@ module BranchBench;
     end endtask
     
     initial begin
-        mcu.ibpred = always_ibpred;
         predictorname = "always";
         run_programs();
         

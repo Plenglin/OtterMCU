@@ -76,11 +76,11 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     (* ram_decomp = "power" *) logic [31:0] memory [0:16383];
     
     function void load_memory(input string filename);
-        $sreadmemh(filename, memory, 0, 16383);
+        $readmemh(filename, memory, 0, 16383);
     endfunction
     
     initial begin
-        $sreadmemh(MEM_FILE, memory, 0, 16383);
+        $readmemh(MEM_FILE, memory, 0, 16383);
     end
     
     assign wordAddr2 = MEM_ADDR2[15:2];
