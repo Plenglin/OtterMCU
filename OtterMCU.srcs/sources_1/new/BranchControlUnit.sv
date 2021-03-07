@@ -29,11 +29,11 @@ module BranchControlUnit(
         iface.flush_idex = 0;
         pc_source = src_next;
         
-        if (ex_certain_br) begin  // we should have branched
+        if (ex_certain_br) begin  // EX wants to jump
             if (iface.ex_status == confirm_br) begin  // confirming a branch
                 pc_source = src_next;
                 iface.flush_idex = 1;
-            end else if (iface.ex_status == rollback_nobr) begin  // rolling back a mispredicted branch
+            end else begin  // rolling back a mispredicted no-branch, or performing a JALR
                 pc_source = src_ex_target;
                 iface.flush_ifid = 1;
                 iface.flush_idex = 1;

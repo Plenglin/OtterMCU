@@ -25,7 +25,7 @@ module EXStage(
     assign idex_mem_read = prev.mem.read;
     assign idex_wb_wa = prev.wb.wa;
 
-    logic [31:0] alu_a;
+    logic [31:0] alu_a, alu_b;
     ForwardingUnit fu_a(
         .idex_adr(prev.alu_a_adr),
         .idex_data(prev.alu_a),
@@ -40,8 +40,6 @@ module EXStage(
         
         .alu_arg(alu_a)
     );
-    
-    logic [31:0] alu_b;
     ForwardingUnit fu_b(
         .idex_adr(prev.alu_b_adr),
         .idex_data(prev.alu_b),
@@ -74,8 +72,11 @@ module EXStage(
     );
     
     always_comb case (prev.branch_status) inside
-        predict_none, predict_jump: 
-            bcu.ex_status = ex_normal;
+        predict_none: 
+            if (prev.opcode == JALR) begin
+                bcu.ex_status = ex_jalr;
+            end else
+                bcu.ex_status = ex_normal;
         predict_br:
             bcu.ex_status = should_branch ? confirm_br : rollback_br;
         predict_nobr:
@@ -86,7 +87,9 @@ module EXStage(
     assign predictor.ex_pc = prev.pc;
     
     assign bcu.ex_pc = prev.pc;
-    assign bcu.ex_target = prev.jump_target; 
+    assign bcu.ex_target = (prev.opcode == JALR)
+        ? alu_a + alu_b
+        : prev.jump_target; 
     
     // Forwarding for store instructions
     logic [31:0] mem_rs2;

@@ -14,6 +14,7 @@ typedef enum logic [2:0] {
     confirm_br = 3'b111,
     rollback_br = 3'b100,
     rollback_nobr = 3'b101,
+    ex_jalr = 3'b001,
     ex_normal = 3'b000
 } br_certain_t;
 

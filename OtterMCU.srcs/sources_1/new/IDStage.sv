@@ -50,15 +50,15 @@ module IDStage(
     
     logic is_branch;
     assign is_branch = opcode == BRANCH;
-    assign is_jump = opcode == JAL | opcode == JALR;
+    assign is_jump = opcode == JAL;
     
     assign predictor.id_is_branch = is_branch;
     assign predictor.id_branch_type = func3;  
     assign predictor.id_pc = pc;
     
     br_predict_t prediction;
-    always_comb case (opcode) inside
-        JAL, JALR:
+    always_comb case (opcode)
+        JAL:
             prediction = predict_jump;
         BRANCH:
             prediction = predictor.should_branch ? predict_br : predict_nobr;
