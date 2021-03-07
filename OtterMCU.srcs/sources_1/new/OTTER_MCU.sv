@@ -39,6 +39,10 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     assign IOBUS_OUT = mem_input.mem.rs2;
     assign IOBUS_ADDR = mem_input.alu_result;
     
+    function void load_memory(input string file);
+        mem.load_memory(file);
+    endfunction
+    
     logic [31:0] wb_wd, id_rs1, id_rs2;
     logic [4:0] id_adr1, id_adr2, wb_wa; 
     logic wb_we;
