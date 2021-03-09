@@ -18,6 +18,15 @@ typedef enum logic [2:0] {
     ex_normal = 3'b000
 } br_certain_t;
 
+typedef enum logic [3:0] {
+    bp_random,
+    bp_always,
+    bp_never,
+    bp_backwards,
+    bp_tla,
+    bp_tbs
+} branch_predictor_t;
+
 typedef enum logic [6:0] {
     LUI      = 7'b0110111,
     AUIPC    = 7'b0010111,

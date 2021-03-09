@@ -21,7 +21,7 @@ module BranchBench;
     );
     
     logic done;
-    assign done = (iobus_wr & iobus_addr == 32'h10001000 & iobus_out == 1);
+    assign done = (iobus_addr == 32'h10001000 & iobus_out == 1);
 
     string progname, predictorname;
     
