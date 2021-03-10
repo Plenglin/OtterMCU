@@ -10,7 +10,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     input [31:0] IOBUS_IN,
     output [31:0] IOBUS_OUT,
     output [31:0] IOBUS_ADDR,
-    output logic IOBUS_WR 
+    output logic IOBUS_WR,
+    output performance_t performance
 );
     logic [31:0] jalr, branch, jal;
     
@@ -82,7 +83,8 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     BranchControlUnit bcu(
         .clk(CLK),
         .reset(reset),
-        .iface(ibcu.BCU)
+        .iface(ibcu.BCU),
+        .perf(performance.branch)
     );
     BranchPredictor ibpred(
         .clk(CLK),

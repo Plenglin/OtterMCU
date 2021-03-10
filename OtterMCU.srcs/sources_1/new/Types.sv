@@ -157,4 +157,8 @@ typedef struct packed {
         wrong_nobr;
 } branch_perf;
 
+typedef struct packed {
+    branch_perf branch;
+} performance_t;
+
 endpackage

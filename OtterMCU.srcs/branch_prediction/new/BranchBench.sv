@@ -11,7 +11,9 @@ module BranchBench;
     
     logic reset, iobus_wr;
     logic [31:0] iobus_out, iobus_addr;
+    branch_predictor_t bp_selection;
     OTTER_MCU mcu(
+        .bp_selection(bp_selection),
         .RESET       (reset),
         .CLK         (clk),
         .IOBUS_IN    (0),
@@ -39,7 +41,8 @@ module BranchBench;
     end endtask
     
     string programs[] = '{
-        "matmul.mem"
+        "matmul.mem",
+        "quicksort.mem"
     };
     
     task run_programs(); begin
@@ -52,7 +55,13 @@ module BranchBench;
     
     initial begin
         predictorname = "always";
+        bp_selection = bp_always;
         run_programs();
+        
+        predictorname = "never";
+        bp_selection = bp_never;
+        run_programs();
+        
         $stop();
     end
 endmodule

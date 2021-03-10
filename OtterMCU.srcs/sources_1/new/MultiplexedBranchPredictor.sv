@@ -38,25 +38,13 @@ module MultiplexedBranchPredictor(
     BranchPredictor random_ibp(.*);
     RandomBranchPredictor random(.bp(random_ibp));
     
-    logic tla_should_branch;
-    BranchPredictor tla_ibp(.*);
-    TwoLevelAdaptivePredictor tla(.bp(tla_ibp));
-    
-    logic tbs_should_branch;
-    BranchPredictor tbs_ibp(.*);
-    TwoBitSaturatedCounterPredictor tbs(.bp(tbs_ibp));
-    
     always_comb case (selection)
         bp_random: 
-            bp.should_branch = random_should_branch;
+            bp.should_branch = random_ibp.should_branch;
         bp_always: 
-            bp.should_branch = always_should_branch;
+            bp.should_branch = always_ibp.should_branch;
         bp_never: 
-            bp.should_branch = never_should_branch;
-        bp_tla: 
-            bp.should_branch = tla_should_branch;
-        bp_tbs: 
-            bp.should_branch = tbs_should_branch;
+            bp.should_branch = never_ibp.should_branch;
     endcase
     
 endmodule
