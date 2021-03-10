@@ -3,6 +3,7 @@ import Types::*;
 
 module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 (
+    input branch_predictor_t bp_selection = bp_random,
     input CLK,
     input INTR,
     input RESET,
@@ -78,12 +79,19 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     IBranchControlUnit ibcu();
     assign flush_ifid = ibcu.flush_ifid;
     assign flush_idex = ibcu.flush_idex;
-    BranchControlUnit bcu(.iface(ibcu.BCU));
+    BranchControlUnit bcu(
+        .clk(CLK),
+        .reset(reset),
+        .iface(ibcu.BCU)
+    );
     BranchPredictor ibpred(
         .clk(CLK),
         .reset(reset)
     );
-    RandomBranchPredictor bpred(.bp(ibpred.Predictor));
+    MultiplexedBranchPredictor bpred(
+        .bp(ibpred.Predictor),
+        .selection(bp_selection)
+    );
     
     //////// IF ////////
     

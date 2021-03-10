@@ -2,15 +2,14 @@ module TwoLevelAdaptivePredictor(
         BranchPredictor.Predictor bp
     );
     logic[1:0][1:0] patternHistoryTable; //index is the pattern, the value is the strongly/weakly branch/noBranch
-    logic[1:0] history;
+    logic[1:0] history = 0;
         
     initial begin
         patternHistoryTable['b00] = 'b10;
         patternHistoryTable['b01] = 'b10;
         patternHistoryTable['b10] = 'b10;
         patternHistoryTable['b11] = 'b10;
-        history = 'b00;
-        bp.branch = 'b0;
+        bp.should_branch = 'b0;
     end
     
     always_ff @(posedge bp.clk) begin
@@ -27,7 +26,7 @@ module TwoLevelAdaptivePredictor(
                 patternHistoryTable[history] = patternHistoryTable[history] - 1 + 2*bp.ex_branched;
             end
         endcase
-        bp.branch = patternHistoryTable[history][1];
+        bp.should_branch = patternHistoryTable[history][1];
         history[1] = history[0];
         history[0] = bp.ex_branched;
     end

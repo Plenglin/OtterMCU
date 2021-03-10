@@ -22,7 +22,6 @@ typedef enum logic [3:0] {
     bp_random,
     bp_always,
     bp_never,
-    bp_backwards,
     bp_tla,
     bp_tbs
 } branch_predictor_t;
