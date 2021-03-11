@@ -25,7 +25,7 @@ typedef enum logic [4:0] {
     bp_backwards,
     bp_past,
     bp_tla,
-    bp_tbs
+    bp_twobit
 } branch_predictor_t;
 
 typedef enum logic [6:0] {
@@ -156,7 +156,8 @@ typedef struct packed {
         correct_br, 
         correct_nobr, 
         wrong_br, 
-        wrong_nobr;
+        wrong_nobr,
+        flushes;
 } branch_perf;
 
 typedef struct packed {

@@ -58,12 +58,15 @@ module IDStage(
     
     br_predict_t prediction;
     always_comb case (opcode)
-        JAL:
+        JAL: begin
             prediction = predict_jump;
-        BRANCH:
+        end
+        BRANCH: begin
             prediction = predictor.should_branch ? predict_br : predict_nobr;
-        default:
+        end
+        default: begin
             prediction = predict_none;
+        end
     endcase 
     assign bcu.id_status = prediction;
     

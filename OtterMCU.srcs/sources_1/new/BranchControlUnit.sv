@@ -24,36 +24,39 @@ module BranchControlUnit(
     } pc_source_t;
     pc_source_t pc_source;
     
+    logic flush_ifid, flush_idex;
     always_comb begin
-        iface.flush_ifid = 0;
-        iface.flush_idex = 0;
+        flush_ifid = 0;
+        flush_idex = 0;
         pc_source = src_next;
         
         if (ex_certain_br) begin  // EX wants to jump
             if (iface.ex_status == confirm_br) begin  // confirming a branch
                 pc_source = src_next;
-                iface.flush_idex = 1;
+                flush_idex = 1;
             end else begin  // rolling back a mispredicted no-branch, or performing a JALR
                 pc_source = src_ex_target;
-                iface.flush_ifid = 1;
-                iface.flush_idex = 1;
+                flush_ifid = 1;
+                flush_idex = 1;
             end 
         end else begin  // we should not have branched
             if (id_predict_br) begin  // predicting a new branch
                 pc_source = src_id_target;
                 if (iface.id_status == predict_jump) begin
-                    iface.flush_ifid = 1;
+                    flush_ifid = 1;
                 end else if (iface.ex_status == rollback_br)
-                    iface.flush_ifid = 1;
+                    flush_ifid = 1;
             end else begin  // predict no branch
                 if (iface.ex_status == rollback_br) begin
-                    iface.flush_ifid = 1;
+                    flush_ifid = 1;
                     pc_source = src_ex_subsequent; 
                 end else
                     pc_source = src_next;
             end
         end
     end
+    assign iface.flush_ifid = flush_ifid;
+    assign iface.flush_idex = flush_idex;
     
     always_comb case (pc_source)
         src_next: 
@@ -70,14 +73,22 @@ module BranchControlUnit(
         correct_br: 0, 
         correct_nobr: 0, 
         wrong_br: 0, 
-        wrong_nobr: 0
+        wrong_nobr: 0,
+        flushes: 0
     };
+    
+    logic [1:0] flushes;
+    assign flushes = 2'(flush_ifid) + 2'(flush_idex);
+    
     always_ff @(posedge clk) begin
+        perf.flushes += flushes;
+        
         if (reset) begin
             perf.correct_br <= 32'b0;
             perf.correct_nobr <= 32'b0;
             perf.wrong_br <= 32'b0;
             perf.wrong_nobr <= 32'b0;
+            perf.flushes <= 32'b0;
         end else case (iface.ex_status)
             confirm_br: 
                 perf.correct_br <= 1 + perf.correct_br;

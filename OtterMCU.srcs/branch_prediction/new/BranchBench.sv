@@ -40,14 +40,15 @@ module BranchBench;
         
         duration = $time - start; 
         $display(
-            "%s\t%s\t%0d\t%0d\t%0d\t%0d\t%0d", 
+            "%s\t%s\t%0d\t%0d\t%0d\t%0d\t%0d\t%0d", 
             progname, 
             predictorname, 
             duration,
             perf.branch.correct_br,
             perf.branch.correct_nobr,
             perf.branch.wrong_br,
-            perf.branch.wrong_nobr
+            perf.branch.wrong_nobr,
+            perf.branch.flushes
         );
     end endtask
     
@@ -65,7 +66,7 @@ module BranchBench;
     end endtask
     
     initial begin
-        $display("program\tpredictor\tduration\tcb\tcnb\twb\twnb");
+        $display("program\tpredictor\tduration\tcb\tcnb\twb\twnb\tflushes");
         
         predictorname = "always";
         bp_selection = bp_always;
