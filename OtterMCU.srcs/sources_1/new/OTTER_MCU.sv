@@ -82,13 +82,13 @@ module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
     assign flush_idex = ibcu.flush_idex;
     BranchControlUnit bcu(
         .clk(CLK),
-        .reset(reset),
+        .reset(RESET),
         .iface(ibcu.BCU),
-        .perf(performance.branch)
+        .performance(performance.branch)
     );
     BranchPredictor ibpred(
         .clk(CLK),
-        .reset(reset)
+        .reset(RESET)
     );
     MultiplexedBranchPredictor bpred(
         .bp(ibpred.Predictor),

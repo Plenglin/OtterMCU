@@ -6,8 +6,8 @@ module BranchControlUnit(
     IBranchControlUnit.BCU iface,
     input clk,
     input reset,
-    output branch_perf perf
-    );
+    output branch_perf performance
+);
     
     assign ex_is_branch = iface.ex_status[2];
     assign ex_correct = iface.ex_status[1];
@@ -66,18 +66,28 @@ module BranchControlUnit(
             iface.if_pc_d = iface.ex_pc + 8;
     endcase
     
+    branch_perf perf = branch_perf'{
+        correct_br: 0, 
+        correct_nobr: 0, 
+        wrong_br: 0, 
+        wrong_nobr: 0
+    };
     always_ff @(posedge clk) begin
-        if (reset) 
-            perf = 0;
-        else case (iface.ex_status)
+        if (reset) begin
+            perf.correct_br <= 32'b0;
+            perf.correct_nobr <= 32'b0;
+            perf.wrong_br <= 32'b0;
+            perf.wrong_nobr <= 32'b0;
+        end else case (iface.ex_status)
             confirm_br: 
-                perf.correct_br += 1;
+                perf.correct_br <= 1 + perf.correct_br;
             confirm_nobr: 
-                perf.correct_nobr += 1;
+                perf.correct_nobr <= 1 + perf.correct_nobr;
             rollback_br: 
-                perf.wrong_br += 1;
+                perf.wrong_br <= 1 + perf.wrong_br;
             rollback_nobr: 
-                perf.wrong_nobr += 1;
+                perf.wrong_nobr <= 1 + perf.wrong_nobr;
         endcase
     end
+    assign performance = perf;
 endmodule

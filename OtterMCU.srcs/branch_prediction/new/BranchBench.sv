@@ -12,6 +12,7 @@ module BranchBench;
     logic reset, iobus_wr;
     logic [31:0] iobus_out, iobus_addr;
     branch_predictor_t bp_selection;
+    performance_t perf;
     OTTER_MCU mcu(
         .bp_selection(bp_selection),
         .RESET       (reset),
@@ -19,7 +20,8 @@ module BranchBench;
         .IOBUS_IN    (0),
         .IOBUS_OUT   (iobus_out), 
         .IOBUS_ADDR  (iobus_addr), 
-        .IOBUS_WR    (iobus_wr)
+        .IOBUS_WR    (iobus_wr),
+        .performance(perf)
     );
     
     logic done;
@@ -37,7 +39,16 @@ module BranchBench;
         while (!done) #1;
         
         duration = $time - start; 
-        $display("%s,%s,%s", progname, predictorname, duration);
+        $display(
+            "%s,%s,%0d,%0d,%0d,%0d,%0d", 
+            progname, 
+            predictorname, 
+            duration,
+            perf.branch.correct_br,
+            perf.branch.correct_nobr,
+            perf.branch.wrong_br,
+            perf.branch.wrong_nobr
+        );
     end endtask
     
     string programs[] = '{
@@ -54,6 +65,7 @@ module BranchBench;
     end endtask
     
     initial begin
+        $display("program,predictor,duration,cb,cnb,wb,wnb");
         predictorname = "always";
         bp_selection = bp_always;
         run_programs();
@@ -62,6 +74,10 @@ module BranchBench;
         bp_selection = bp_never;
         run_programs();
         
-        $stop();
+        predictorname = "random";
+        bp_selection = bp_random;
+        run_programs();
+        
+        $finish();
     end
 endmodule
