@@ -88,6 +88,7 @@ module EXStage(
         ? alu_a + alu_b
         : prev.jump_target;
          
+    assign predictor.ex_is_branch = (prev.opcode == BRANCH);
     assign predictor.ex_branched = should_branch;
     assign predictor.ex_branch_type = prev.func3;
     assign predictor.ex_pc = prev.pc;

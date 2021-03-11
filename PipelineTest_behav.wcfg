@@ -13,11 +13,11 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1658001fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomEndTime time="1616001fs"></ZoomEndTime>
+      <Cursor1Time time="1559590000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="189"></NameColumnWidth>
+      <NameColumnWidth column_width="185"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="24" />
@@ -104,6 +104,14 @@
          <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
          <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibpred/id_target">
+         <obj_property name="ElementShortName">id_target[31:0]</obj_property>
+         <obj_property name="ObjectShortName">id_target[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/PipelineTest/my_otter/ibpred/ex_is_branch">
+         <obj_property name="ElementShortName">ex_is_branch</obj_property>
+         <obj_property name="ObjectShortName">ex_is_branch</obj_property>
+      </wvobject>
       <wvobject type="logic" fp_name="/PipelineTest/my_otter/ibpred/ex_branched">
          <obj_property name="ElementShortName">ex_branched</obj_property>
          <obj_property name="ObjectShortName">ex_branched</obj_property>
@@ -115,6 +123,10 @@
       <wvobject type="array" fp_name="/PipelineTest/my_otter/ibpred/ex_pc">
          <obj_property name="ElementShortName">ex_pc[31:0]</obj_property>
          <obj_property name="ObjectShortName">ex_pc[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/PipelineTest/my_otter/ibpred/ex_target">
+         <obj_property name="ElementShortName">ex_target[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ex_target[31:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/PipelineTest/my_otter/ibpred/should_branch">
          <obj_property name="ElementShortName">should_branch</obj_property>

@@ -12,7 +12,9 @@ module MultiplexedBranchPredictor(
         ibp.id_branch_type = bp.id_branch_type;\
         ibp.id_pc = bp.id_pc;\
         ibp.id_target = bp.id_target;\
+        ibp.ex_is_branch = bp.ex_is_branch;\
         ibp.ex_branched = bp.ex_branched;\
+        ibp.ex_branch_type = bp.ex_branch_type;\
         ibp.ex_pc = bp.ex_pc;\
         ibp.ex_target = bp.ex_target;\
     end
@@ -45,6 +47,13 @@ module MultiplexedBranchPredictor(
     `connect(backwards_ibp);
     AlwaysBackwardsPredictor backwards(.bp(backwards_ibp));
     
+    BranchPredictor past_ibp(
+        .clk(bp.clk),
+        .reset(bp.clk)
+    );
+    `connect(past_ibp);
+    PastBranchPredictor past(.bp(past_ibp));
+    
     always_comb case (selection)
         bp_random: 
             bp.should_branch = random_ibp.should_branch;
@@ -54,6 +63,8 @@ module MultiplexedBranchPredictor(
             bp.should_branch = never_ibp.should_branch;
         bp_backwards: 
             bp.should_branch = backwards_ibp.should_branch;
+        bp_past: 
+            bp.should_branch = past_ibp.should_branch;
     endcase
     
 endmodule

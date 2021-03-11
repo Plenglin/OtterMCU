@@ -20,6 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
+import Types::*;
+
 module PipelineTest();
     reg RST; 
     reg intr; 
@@ -36,7 +38,8 @@ module PipelineTest();
      .IOBUS_IN    (0),
      .IOBUS_OUT   (iobus_out), 
      .IOBUS_ADDR  (iobus_addr), 
-     .IOBUS_WR    (iobus_wr)
+     .IOBUS_WR    (iobus_wr),
+     .bp_selection(bp_past)
     );
      
     //- Generate periodic clock signal    

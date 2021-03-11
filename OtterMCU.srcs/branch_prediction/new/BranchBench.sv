@@ -83,6 +83,10 @@ module BranchBench;
         bp_selection = bp_backwards;
         run_programs();
         
+        predictorname = "past";
+        bp_selection = bp_past;
+        run_programs();
+        
         $finish();
     end
 endmodule
