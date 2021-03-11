@@ -82,14 +82,19 @@ module EXStage(
         predict_nobr:
             bcu.ex_status = should_branch ? rollback_nobr : confirm_nobr;
     endcase
+    
+    logic [31:0] jump_target;
+    assign jump_target = (prev.opcode == JALR)
+        ? alu_a + alu_b
+        : prev.jump_target;
+         
     assign predictor.ex_branched = should_branch;
     assign predictor.ex_branch_type = prev.func3;
     assign predictor.ex_pc = prev.pc;
+    assign predictor.ex_target = jump_target;
     
     assign bcu.ex_pc = prev.pc;
-    assign bcu.ex_target = (prev.opcode == JALR)
-        ? alu_a + alu_b
-        : prev.jump_target; 
+    assign bcu.ex_target = jump_target;
     
     // Forwarding for store instructions
     logic [31:0] mem_rs2;

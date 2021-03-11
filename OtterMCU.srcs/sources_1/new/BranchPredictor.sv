@@ -35,12 +35,14 @@ interface BranchPredictor(
         output id_is_branch,
         output id_branch_type,
         output id_pc,
+        output id_target,
         input should_branch
     );
     
     modport EX(
         output ex_branched,
         output ex_branch_type,
-        output ex_pc
+        output ex_pc,
+        output ex_target
     );
 endinterface 

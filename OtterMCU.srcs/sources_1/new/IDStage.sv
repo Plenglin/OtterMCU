@@ -77,6 +77,7 @@ module IDStage(
         .j_type_imm(j_imm),
         .target(jump_target)
     );
+    assign predictor.id_target = jump_target;
     assign bcu.id_target = jump_target;
     
     assign adr1 = ir[19:15];

@@ -3,7 +3,7 @@ import Types::*;
 
 module OTTER_MCU #(parameter MEM_FILE="otter_memory.mem")
 (
-    input branch_predictor_t bp_selection = bp_random,
+    input branch_predictor_t bp_selection = bp_backwards,
     input CLK,
     input INTR,
     input RESET,

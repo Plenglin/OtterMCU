@@ -6,37 +6,44 @@ module MultiplexedBranchPredictor(
         BranchPredictor.Predictor bp,
         input branch_predictor_t selection
     );
-    logic clk;
-    logic reset;
-    logic id_is_branch;
-    func3_t id_branch_type;
-    logic [31:0] id_pc, id_target;
     
-    logic ex_branched;
-    func3_t ex_branch_type;
-    logic [31:0] ex_pc, ex_target;
+    `define connect(ibp) always_comb begin \
+        ibp.id_is_branch = bp.id_is_branch;\
+        ibp.id_branch_type = bp.id_branch_type;\
+        ibp.id_pc = bp.id_pc;\
+        ibp.id_target = bp.id_target;\
+        ibp.ex_branched = bp.ex_branched;\
+        ibp.ex_pc = bp.ex_pc;\
+        ibp.ex_target = bp.ex_target;\
+    end
     
-    assign clk = bp.clk;
-    assign reset = bp.reset;
-    assign id_is_branch = bp.id_is_branch;
-    assign id_branch_type = bp.id_branch_type;
-    assign id_pc = bp.id_pc;
-    assign id_target = bp.id_target;
-    assign ex_branched = bp.ex_branched;
-    assign ex_pc = bp.ex_pc;
-    assign ex_target = bp.ex_target;
-    
-    logic always_should_branch;
-    BranchPredictor always_ibp(.*);
+    BranchPredictor always_ibp(
+        .clk(bp.clk),
+        .reset(bp.clk)
+    );
+    `connect(always_ibp);
     AlwaysBranchPredictor always_bp(.bp(always_ibp));
     
-    logic never_should_branch;
-    BranchPredictor never_ibp(.*);
+    BranchPredictor never_ibp(
+        .clk(bp.clk),
+        .reset(bp.clk)
+    );
+    `connect(never_ibp);
     NeverBranchPredictor never_bp(.bp(never_ibp));
     
-    logic random_should_branch;
-    BranchPredictor random_ibp(.*);
+    BranchPredictor random_ibp(
+        .clk(bp.clk),
+        .reset(bp.clk)
+    );
+    `connect(random_ibp);
     RandomBranchPredictor random(.bp(random_ibp));
+    
+    BranchPredictor backwards_ibp(
+        .clk(bp.clk),
+        .reset(bp.clk)
+    );
+    `connect(backwards_ibp);
+    AlwaysBackwardsPredictor backwards(.bp(backwards_ibp));
     
     always_comb case (selection)
         bp_random: 
@@ -45,6 +52,8 @@ module MultiplexedBranchPredictor(
             bp.should_branch = always_ibp.should_branch;
         bp_never: 
             bp.should_branch = never_ibp.should_branch;
+        bp_backwards: 
+            bp.should_branch = backwards_ibp.should_branch;
     endcase
     
 endmodule
