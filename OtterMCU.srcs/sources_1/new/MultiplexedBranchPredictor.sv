@@ -61,6 +61,13 @@ module MultiplexedBranchPredictor(
     `connect(twobit_ibp);
     TwoBitSaturatedCounterPredictor twobit(.bp(twobit_ibp));
     
+    BranchPredictor tla_ibp(
+        .clk(bp.clk),
+        .reset(bp.reset)
+    );
+    `connect(tla_ibp);
+    TwoLevelAdaptivePredictor tla(.bp(tla_ibp));
+    
     always_comb case (selection)
         bp_random: 
             bp.should_branch = random_ibp.should_branch;
@@ -74,6 +81,8 @@ module MultiplexedBranchPredictor(
             bp.should_branch = past_ibp.should_branch;
         bp_twobit: 
             bp.should_branch = twobit_ibp.should_branch;
+        bp_tla: 
+            bp.should_branch = tla_ibp.should_branch;
     endcase
     
 endmodule

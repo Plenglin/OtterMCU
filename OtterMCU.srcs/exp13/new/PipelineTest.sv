@@ -39,7 +39,7 @@ module PipelineTest();
      .IOBUS_OUT   (iobus_out), 
      .IOBUS_ADDR  (iobus_addr), 
      .IOBUS_WR    (iobus_wr),
-     .bp_selection(bp_twobit)
+     .bp_selection(bp_tla)
     );
      
     //- Generate periodic clock signal    

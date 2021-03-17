@@ -88,6 +88,14 @@ module BranchBench;
         bp_selection = bp_past;
         run_programs();
         
+        predictorname = "twobit";
+        bp_selection = bp_twobit;
+        run_programs();
+        
+        predictorname = "2ladaptive";
+        bp_selection = bp_tla;
+        run_programs();
+        
         $finish();
     end
 endmodule
