@@ -80,25 +80,26 @@ module BranchControlUnit(
     logic [1:0] flushes;
     assign flushes = 2'(flush_ifid) + 2'(flush_idex);
     
-    always_ff @(posedge clk) begin
-        perf.flushes += flushes;
-        
+    always_ff @(posedge clk) begin        
         if (reset) begin
             perf.correct_br <= 32'b0;
             perf.correct_nobr <= 32'b0;
             perf.wrong_br <= 32'b0;
             perf.wrong_nobr <= 32'b0;
             perf.flushes <= 32'b0;
-        end else case (iface.ex_status)
-            confirm_br: 
-                perf.correct_br <= 1 + perf.correct_br;
-            confirm_nobr: 
-                perf.correct_nobr <= 1 + perf.correct_nobr;
-            rollback_br: 
-                perf.wrong_br <= 1 + perf.wrong_br;
-            rollback_nobr: 
-                perf.wrong_nobr <= 1 + perf.wrong_nobr;
-        endcase
+        end else begin
+            perf.flushes <= flushes + perf.flushes;
+            case (iface.ex_status)
+                confirm_br: 
+                    perf.correct_br <= 1 + perf.correct_br;
+                confirm_nobr: 
+                    perf.correct_nobr <= 1 + perf.correct_nobr;
+                rollback_br: 
+                    perf.wrong_br <= 1 + perf.wrong_br;
+                rollback_nobr: 
+                    perf.wrong_nobr <= 1 + perf.wrong_nobr;
+            endcase
+        end
     end
     assign performance = perf;
 endmodule

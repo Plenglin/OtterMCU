@@ -54,7 +54,8 @@ module BranchBench;
     
     string programs[] = '{
         "matmul.mem",
-        "quicksort.mem"
+        "quicksort.mem",
+        "testall.mem"
     };
     
     task run_programs(); begin
