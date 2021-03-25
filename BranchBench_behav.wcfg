@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="95400fs"></ZoomStartTime>
-      <ZoomEndTime time="106061fs"></ZoomEndTime>
-      <Cursor1Time time="106000fs"></Cursor1Time>
+      <ZoomStartTime time="383713000fs"></ZoomStartTime>
+      <ZoomEndTime time="641113001fs"></ZoomEndTime>
+      <Cursor1Time time="598213000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="209"></NameColumnWidth>
-      <ValueColumnWidth column_width="101"></ValueColumnWidth>
+      <ValueColumnWidth column_width="97"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="9" />
    <wvobject type="logic" fp_name="/BranchBench/clk">
@@ -53,9 +53,9 @@
       <obj_property name="ElementShortName">duration[31:0]</obj_property>
       <obj_property name="ObjectShortName">duration[31:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/BranchBench/mcu/id_pc">
-      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
-      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   <wvobject type="array" fp_name="/BranchBench/mcu/if_pc">
+      <obj_property name="ElementShortName">if_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_pc[31:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
    </wvobject>

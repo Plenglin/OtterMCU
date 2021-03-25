@@ -72,7 +72,7 @@ module EXStage(
     );
     
     always_comb case (prev.branch_status) inside
-        predict_none: 
+        predict_none, predict_jump: 
             if (prev.opcode == JALR) begin
                 bcu.ex_status = ex_jalr;
             end else

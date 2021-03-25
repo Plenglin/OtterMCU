@@ -30,30 +30,31 @@ module BranchControlUnit(
         flush_idex = 0;
         pc_source = src_next;
         
-        if (ex_certain_br) begin  // EX wants to jump
-            if (iface.ex_status == confirm_br) begin  // confirming a branch
-                pc_source = src_next;
-                flush_idex = 1;
-            end else begin  // rolling back a mispredicted no-branch, or performing a JALR
+        case (iface.ex_status) inside
+            ex_jalr, rollback_nobr: begin
                 pc_source = src_ex_target;
                 flush_ifid = 1;
                 flush_idex = 1;
-            end 
-        end else begin  // we should not have branched
-            if (id_predict_br) begin  // predicting a new branch
-                pc_source = src_id_target;
-                if (iface.id_status == predict_jump) begin
-                    flush_ifid = 1;
-                end else if (iface.ex_status == rollback_br)
-                    flush_ifid = 1;
-            end else begin  // predict no branch
-                if (iface.ex_status == rollback_br) begin
-                    flush_ifid = 1;
-                    pc_source = src_ex_subsequent; 
-                end else
-                    pc_source = src_next;
             end
-        end
+            confirm_br: begin
+                pc_source = src_next;
+                flush_idex = 1;
+            end
+            rollback_br: begin 
+                flush_ifid = 1;
+                pc_source = id_predict_br ? src_id_target : src_ex_subsequent;
+            end
+            default: case (iface.id_status) inside
+                predict_none, predict_nobr:
+                    pc_source = src_next;
+                predict_br:
+                    pc_source = src_id_target;
+                predict_jump: begin
+                    flush_ifid = 1;
+                    pc_source = src_id_target;
+                end
+            endcase
+        endcase
     end
     assign iface.flush_ifid = flush_ifid;
     assign iface.flush_idex = flush_idex;
