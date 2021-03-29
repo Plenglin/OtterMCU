@@ -6,7 +6,7 @@ module BranchCondGen(
     input [2:0] func3,
     input [31:0] rs1,
     input [31:0] rs2,
-    output pcsrc_t pcSource
+    output should_branch
     );
     
     // Branch condition selector
@@ -18,28 +18,6 @@ module BranchCondGen(
         default: raw_branch_cond = 0;       // ruh roh
     endcase
     
-    logic branch_cond;
-    assign branch_cond = raw_branch_cond ^ func3[0];
-     
-    always_comb case(opcode)
-        JAL: begin 
-            pcSource = pcsrc_JAL;
-        end 
-         
-        JALR: begin 
-            pcSource = pcsrc_JALR;
-        end
-         
-        BRANCH: begin 
-            pcSource = branch_cond   
-                ? pcsrc_BRANCH 
-                : pcsrc_NEXT; 
-        end 
-        
-        default: begin
-            pcSource = pcsrc_NEXT;
-        end
-    endcase
-    
+    assign should_branch = raw_branch_cond ^ func3[0];
     
 endmodule

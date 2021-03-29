@@ -13,20 +13,19 @@ module EXStage(
     input [31:0] memwb_data,
     input memwb_we,
     
+    BranchPredictor.EX predictor,
+    IBranchControlUnit.EX bcu,
+    
     output idex_mem_read,
     output [4:0] idex_wb_wa,
     
-    output EXMEM_t result,
-    output pcsrc_t pc_source,
-    output [31:0] jal,
-    output [31:0] jalr,
-    output [31:0] branch
+    output EXMEM_t result
 );
 
     assign idex_mem_read = prev.mem.read;
     assign idex_wb_wa = prev.wb.wa;
 
-    logic [31:0] alu_a;
+    logic [31:0] alu_a, alu_b;
     ForwardingUnit fu_a(
         .idex_adr(prev.alu_a_adr),
         .idex_data(prev.alu_a),
@@ -41,8 +40,6 @@ module EXStage(
         
         .alu_arg(alu_a)
     );
-    
-    logic [31:0] alu_b;
     ForwardingUnit fu_b(
         .idex_adr(prev.alu_b_adr),
         .idex_data(prev.alu_b),
@@ -65,24 +62,40 @@ module EXStage(
         .result(result.alu_result)
     );
     
+    logic should_branch;
     BranchCondGen bcg(
         .rs1(alu_a),
         .rs2(alu_b),
         .opcode(prev.opcode),
         .func3(prev.func3),
-        .pcSource(pc_source)
+        .should_branch(should_branch)
     );
-
-    BranchAddrGen bag(
-        .pc(prev.pc),
-        .rs(alu_a),
-        .b_type_imm(prev.b_imm),
-        .i_type_imm(prev.i_imm),
-        .j_type_imm(prev.j_imm),
-        .jal(jal),
-        .jalr(jalr),
-        .branch(branch)
-    );
+    
+    always_comb case (prev.branch_status) inside
+        predict_none, predict_jump: 
+            if (prev.opcode == JALR) begin
+                bcu.ex_status = ex_jalr;
+            end else
+                bcu.ex_status = ex_normal;
+        predict_br:
+            bcu.ex_status = should_branch ? confirm_br : rollback_br;
+        predict_nobr:
+            bcu.ex_status = should_branch ? rollback_nobr : confirm_nobr;
+    endcase
+    
+    logic [31:0] jump_target;
+    assign jump_target = (prev.opcode == JALR)
+        ? alu_a + alu_b
+        : prev.jump_target;
+         
+    assign predictor.ex_is_branch = (prev.opcode == BRANCH);
+    assign predictor.ex_branched = should_branch;
+    assign predictor.ex_branch_type = prev.func3;
+    assign predictor.ex_pc = prev.pc;
+    assign predictor.ex_target = jump_target;
+    
+    assign bcu.ex_pc = prev.pc;
+    assign bcu.ex_target = jump_target;
     
     // Forwarding for store instructions
     logic [31:0] mem_rs2;

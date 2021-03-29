@@ -75,6 +75,10 @@ module Memory #(parameter MEM_FILE="otter_memory.mem") (
     (* rom_style="{distributed | block}" *)
     (* ram_decomp = "power" *) logic [31:0] memory [0:16383];
     
+    function void load_memory(input string filename);
+        $readmemh(filename, memory, 0, 16383);
+    endfunction
+    
     initial begin
         $readmemh(MEM_FILE, memory, 0, 16383);
     end

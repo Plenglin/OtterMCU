@@ -1,5 +1,33 @@
 package Types;
 
+// Bits: <is branch> <should jump>
+typedef enum logic [1:0] {
+    predict_none = 2'b00,
+    predict_jump = 2'b01,
+    predict_nobr = 2'b10,
+    predict_br = 2'b11
+} br_predict_t;
+
+// Bits: <is branch> <was correct> <should have jumped>
+typedef enum logic [2:0] {
+    confirm_nobr = 3'b110,
+    confirm_br = 3'b111,
+    rollback_br = 3'b100,
+    rollback_nobr = 3'b101,
+    ex_jalr = 3'b001,
+    ex_normal = 3'b000
+} br_certain_t;
+
+typedef enum logic [4:0] {
+    bp_random,
+    bp_always,
+    bp_never,
+    bp_backwards,
+    bp_past,
+    bp_tla,
+    bp_twobit
+} branch_predictor_t;
+
 typedef enum logic [6:0] {
     LUI      = 7'b0110111,
     AUIPC    = 7'b0010111,
@@ -101,9 +129,9 @@ typedef struct packed {
     logic [4:0] alu_b_adr;
     logic [31:0] alu_a;
     logic [31:0] alu_b;
-    logic [31:0] j_imm;
+    logic [31:0] jump_target;
     logic [31:0] i_imm;
-    logic [31:0] b_imm;
+    br_predict_t branch_status;
     opcode_t opcode;
     func3_t func3;
     st_MEM_t mem;
@@ -122,5 +150,18 @@ typedef struct packed {
     logic [31:0] alu_result;
     st_WB_t wb;
 } MEMWB_t;
+
+typedef struct packed {
+    logic [31:0] 
+        correct_br, 
+        correct_nobr, 
+        wrong_br, 
+        wrong_nobr,
+        flushes;
+} branch_perf;
+
+typedef struct packed {
+    branch_perf branch;
+} performance_t;
 
 endpackage
